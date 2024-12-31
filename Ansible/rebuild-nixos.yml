@@ -1,9 +1,20 @@
 
 - name: Rebuild Nixos Config
   hosts: localhost
+  vars_files:
+    - rebuild-nixos-vars.yml
   tasks: 
     - name: Rebuild Config
       command: nixos-rebuild switch --flake .#
       args:
-        chdir: /var/lib/autoPull
+        chdir: "{{ location }}"
+      register: result
+
+    - name: Output config
+      debug:
+        msg: "{{ result.stdout_lines }}"
+
+    - name: Output config errors
+      debug:
+        msg: "{{ result.stderr_lines }}"
     

@@ -13,10 +13,14 @@
       home-manager.nixosModules.home-manager
     ];
 
-  system.autoPull = {
+  system.autoPull = let 
+    rebuild-nixos-vars = (import ./../Modules/yamlToSet.nix ) pkgs ./../Ansible/rebuild-nixos-vars.yml;
+  in
+  {
     enable = true;
     sshKey = config.sops.secrets."autoPullPrivateKey".path;
     repo = "git@github.com:TheZombie1999/MyNixosConfiguration.git";
+    dest = rebuild-nixos-vars.location;
   };
 
   sops.defaultSopsFile = ../Secrets/secrets.yaml;
