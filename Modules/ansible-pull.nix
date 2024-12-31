@@ -24,6 +24,7 @@ in
 
       dest = lib.mkOption {
         type = lib.types.path;
+        default = "/var/lib/autoPull";
       };
     };
   };
@@ -31,6 +32,8 @@ in
     systemd.services.autoPull = {
       path = with pkgs; [
         ansible
+        git
+        openssh
       ];
 
       script = /* bash */ ''
@@ -39,6 +42,7 @@ in
           --url ${cfg.repo} \
           --only-if-changed \
           --directory ${cfg.dest} \
+          --accept-host-key \
           Ansible/rebuild-nixos.yml
       '';
       after = [ "network-online.target" ];
@@ -46,7 +50,7 @@ in
     };
     systemd.timers.autoPull = {
       timerConfig = {
-        OnCalendar = "5m";
+        OnCalendar = "*-*-* *:*:00";
         Persistent = true;
         Unit = "autoPull.service";
       };

@@ -15,7 +15,7 @@
 
   system.autoPull = {
     enable = true;
-    sshKey = config.sops.secrets."".path;
+    sshKey = config.sops.secrets."autoPullPrivateKey".path;
     repo = "git@github.com:TheZombie1999/MyNixosConfiguration.git";
   };
 
@@ -23,6 +23,7 @@
   sops.defaultSopsFormat = "yaml";
   sops.age.keyFile = "/home/tim/.config/sops/age/keys.txt";
   sops.secrets.microstar_tailscale_key = { };
+  sops.secrets.autoPullPrivateKey = { };
 
   networking.hostName = "microstar";
 
@@ -59,8 +60,6 @@
   services.tailscale = { 
     enable = true; 
     authKeyFile = config.sops.secrets."microstar_tailscale_key".path;
-    repo = "git@github.com:TheZombie1999/MyNixosConfiguration.git";
-    dest = /var/lib/autoPull;
   };
 
   # services.tailscale.enable = true;
