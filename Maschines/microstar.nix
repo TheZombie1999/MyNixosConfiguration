@@ -2,18 +2,32 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, home-manager, nix-colors, inputs, ... }:
 
 {
   imports =
-    [ # Include the results of the hardware scan.
-      <home-manager/nixos>    
+    [
       ./../Hardware/microstar-hardware-configuration.nix
+      ./../Modules/ansible-pull.nix
+      inputs.sops-nix.nixosModules.sops
+      home-manager.nixosModules.home-manager
     ];
+
+  system.autoPull = {
+    enable = true;
+    sshKey = config.sops.secrets."".path;
+    repo = "git@github.com:TheZombie1999/MyNixosConfiguration.git";
+  };
+
+  sops.defaultSopsFile = ../Secrets/secrets.yaml;
+  sops.defaultSopsFormat = "yaml";
+  sops.age.keyFile = "/home/tim/.config/sops/age/keys.txt";
+  sops.secrets.microstar_tailscale_key = { };
 
   networking.hostName = "microstar";
 
-  home-manager.users.tim = (import ./../MyHomeConfiguration/Users/tim-microstar-home.nix).dark;
+  home-manager.users.tim = import ./../Home/Users/tim-microstar-home.nix;
+  home-manager.extraSpecialArgs = { inherit nix-colors; };
 
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -44,7 +58,9 @@
 
   services.tailscale = { 
     enable = true; 
-    authKeyFile = ../Keys/microstar_auth_key;
+    authKeyFile = config.sops.secrets."microstar_tailscale_key".path;
+    repo = "git@github.com:TheZombie1999/MyNixosConfiguration.git";
+    dest = /var/lib/autoPull;
   };
 
   # services.tailscale.enable = true;
@@ -137,6 +153,12 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
+  services.vikunja = {
+    enable = true;
+    frontendScheme = "http";
+    frontendHostname = "microstar";
+  };
+
   
 
   # services = {
@@ -158,8 +180,7 @@
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
   # accidentally delete configuration.nix.
-  system.copySystemConfiguration = true;
+  # system.copySystemConfiguration = true;
   system.stateVersion = "24.05";
-
 }
 

@@ -1,0 +1,9 @@
+
+- name: Rebuild Nixos Config
+  hosts: localhost
+  tasks: 
+    - name: Rebuild Config
+      command: nixos-rebuild switch --flake .#
+      args:
+        chdir: /home/tim/Github/MyNixosConfiguration
+    

@@ -1,0 +1,16 @@
+live_config_reload = true
+
+[window]
+decorations = "Full"
+padding = { x=100, y=100}
+decorations_theme_variant="None"
+opacity = 0.5
+
+[mouse]
+hide_when_typing = true
+
+
+[cursor]
+style = { shape="Block", blinking="On"}
+
+
