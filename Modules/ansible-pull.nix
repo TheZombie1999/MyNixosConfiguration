@@ -34,6 +34,7 @@ in
         ansible
         git
         openssh
+        nixos-rebuild
       ];
 
       script = /* bash */ ''
