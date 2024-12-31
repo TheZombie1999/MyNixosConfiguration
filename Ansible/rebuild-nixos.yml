@@ -5,5 +5,5 @@
     - name: Rebuild Config
       command: nixos-rebuild switch --flake .#
       args:
-        chdir: /home/tim/Github/MyNixosConfiguration
+        chdir: /var/lib/autoPull
     
