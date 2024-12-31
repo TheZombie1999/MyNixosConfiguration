@@ -73,6 +73,11 @@
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
+  nix.optimise = {
+    automatic = true;
+    dates = [ "03:45" ];
+  };
+
   # services.synergy.client = {
   #   enable = true;
   #   autoStart = true;
@@ -81,7 +86,7 @@
   # };
 
   # Set your time zone.
-  # time.timeZone = "Europe/Amsterdam";
+  time.timeZone = "Europe/Berlin";
 
   users.users.tim = {
     isNormalUser = true;
