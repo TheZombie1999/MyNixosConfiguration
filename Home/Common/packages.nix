@@ -8,7 +8,7 @@
     aria2 # Better wget
     bat # Better cat
     entr # Run Command on file change
-    zeek # Shell Command example Collection
+    # zeek # Shell Command example Collection
     eza # Better ls
     nodePackages.bash-language-server # Bash Autocompletion
     alacritty

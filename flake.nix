@@ -19,6 +19,13 @@
               ./Maschines/microstar.nix
             ];
         };
+        "moab" = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = { inherit inputs; inherit home-manager; inherit nix-colors; };
+            modules = [
+              ./Maschines/moab.nix
+            ];
+        };
       };
   };
 }
