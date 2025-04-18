@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, lib, pkgs, home-manager, nix-colors, inputs, ... }:
+{ config, pkgs, home-manager, nix-colors, inputs, ... }:
 
 {
   imports =
@@ -12,6 +12,16 @@
       inputs.sops-nix.nixosModules.sops
       home-manager.nixosModules.home-manager
     ];
+
+   nix.extraOptions = ''
+        trusted-users = root tim
+    '';
+
+  fileSystems."/mnt" =
+    { device = "/dev/sda3";
+      fsType = "ntfs-3g"; 
+      options = [ "rw" "uid=1000"];
+    };
 
   home-manager.users.tim = import ./../Home/Users/tim-moab-home.nix;
   home-manager.extraSpecialArgs = { inherit nix-colors; };
@@ -44,6 +54,7 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.supportedFilesystems = [ "ntfs" ];
 
   networking.hostName = "moab"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -79,12 +90,19 @@
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
+  services.xserver.windowManager.i3.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "de";
     variant = "";
   };
+  
+  fonts.packages = with pkgs; [
+    nerd-fonts.zed-mono
+    nerd-fonts.martian-mono
+    nerd-fonts.fira-code
+  ];
 
   # Configure console keymap
   console.keyMap = "de";
@@ -116,9 +134,6 @@
     isNormalUser = true;
     description = "tim";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-    #  thunderbird
-    ];
   };
 
   # home-manager.users.tim = import ./../Home/Users/tim-moab-home.nix;
@@ -134,10 +149,10 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
-    minecraft
+    atlauncher
+    prismlauncher
     helix
+    wezterm
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -157,7 +172,7 @@
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

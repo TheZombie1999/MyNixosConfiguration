@@ -10,6 +10,10 @@
         display-messages = true;
         display-inlay-hints = true;
       };
+      editor.inline-diagnostics = {
+        cursor-line = "hint";
+        other-lines = "hint";
+      };
       editor.whitespace = { render = "all"; };
       keys = {
         insert = { "C-m" = "insert_newline"; };

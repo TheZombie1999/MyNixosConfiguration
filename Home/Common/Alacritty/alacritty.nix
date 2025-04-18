@@ -8,6 +8,14 @@
 
   programs.alacritty.enable = true;
   programs.alacritty.settings = {
+    font = {
+      normal = {
+        family = "Fira Code Nerd Font";
+        style = "Regular";
+      };
+      builtin_box_drawing = true;
+    };
+  
     window = {
       decorations = "Full";
       padding = { x=10; y=10;};
