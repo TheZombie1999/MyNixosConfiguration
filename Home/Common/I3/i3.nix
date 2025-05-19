@@ -9,12 +9,6 @@
       example = true;
       description = "Wheather the current theme is a Dark theme or not.";
     };
-    Picom = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      example = true;
-      description = "Wheather the current theme is a Dark theme or not.";
-    };
   };
 
   # home.file."config" = {
@@ -29,13 +23,12 @@
   # client.placeholder      #000000 #0c0c0c #ebdbb2 #000000   #0c0c0c
   # client.background       #282828
   config = {
-    xsession.windowManager.i3.enable = true;  
+    xsession.windowManager.i3.enable = true;
     xsession.windowManager.i3.extraConfig = ''
       default_border normal 0
       title_align center
     '';
     xsession.windowManager.i3.config = rec {
-      gaps.inner = 10;
       modifier = "Mod1";
       keybindings = lib.mkOptionDefault {
         "${modifier}+h" = "focus left";
@@ -53,60 +46,41 @@
       colors = {
         background = "#282828";
         focused = {
-          background  = "#${config.colorScheme.palette.base03}";
-          border      = "#${config.colorScheme.palette.base03}";
+          background = "#${config.colorScheme.palette.base03}";
+          border = "#${config.colorScheme.palette.base03}";
           childBorder = "#${config.colorScheme.palette.base03}";
-          indicator   = "#${config.colorScheme.palette.base03}";
-          text        = "#${config.colorScheme.palette.base07}";
+          indicator = "#${config.colorScheme.palette.base03}";
+          text = "#${config.colorScheme.palette.base07}";
         };
         focusedInactive = {
-          background  = "#${config.colorScheme.palette.base00}";
-          border      = "#${config.colorScheme.palette.base00}";
+          background = "#${config.colorScheme.palette.base00}";
+          border = "#${config.colorScheme.palette.base00}";
           childBorder = "#${config.colorScheme.palette.base00}";
-          indicator   = "#${config.colorScheme.palette.base00}";
-          text        = "#${config.colorScheme.palette.base05}";
+          indicator = "#${config.colorScheme.palette.base00}";
+          text = "#${config.colorScheme.palette.base05}";
         };
         unfocused = {
-          background  = "#${config.colorScheme.palette.base00}";
-          border      = "#${config.colorScheme.palette.base00}";
+          background = "#${config.colorScheme.palette.base00}";
+          border = "#${config.colorScheme.palette.base00}";
           childBorder = "#${config.colorScheme.palette.base00}";
-          indicator   = "#${config.colorScheme.palette.base00}";
-          text        = "#${config.colorScheme.palette.base07}";
+          indicator = "#${config.colorScheme.palette.base00}";
+          text = "#${config.colorScheme.palette.base07}";
         };
         urgent = {
-          background  = "#${config.colorScheme.palette.base08}";
-          border      = "#${config.colorScheme.palette.base08}";
+          background = "#${config.colorScheme.palette.base08}";
+          border = "#${config.colorScheme.palette.base08}";
           childBorder = "#${config.colorScheme.palette.base08}";
-          indicator   = "#${config.colorScheme.palette.base08}";
-          text        = "#${config.colorScheme.palette.base05}";
+          indicator = "#${config.colorScheme.palette.base08}";
+          text = "#${config.colorScheme.palette.base05}";
         };
         placeholder = {
-          background  = "#${config.colorScheme.palette.base0E}";
-          border      = "#${config.colorScheme.palette.base0E}";
+          background = "#${config.colorScheme.palette.base0E}";
+          border = "#${config.colorScheme.palette.base0E}";
           childBorder = "#${config.colorScheme.palette.base0E}";
-          indicator   = "#${config.colorScheme.palette.base0E}";
-          text        = "#${config.colorScheme.palette.base0E}";
+          indicator = "#${config.colorScheme.palette.base0E}";
+          text = "#${config.colorScheme.palette.base0E}";
         };
       };
-    };
-
-    services.picom = lib.mkIf config.Picom {
-      enable = true;
-      shadow = false;
-      shadowExclude = [
-        "class_g = 'firefox' && argb" 
-      ];
-      activeOpacity = 1.0;
-      inactiveOpacity = 1.0;
-      opacityRules = [
-         "95:class_g = 'Alacritty'"
-      ];
-      settings = {
-        corner-radius = 8;
-      };
-
-      vSync = true;
-    
     };
 
     services.random-background = {

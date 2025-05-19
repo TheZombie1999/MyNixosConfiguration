@@ -1,23 +1,38 @@
-{config, pkgs, ...}:
+{ config, pkgs, ... }:
 
 {
   home.packages = with pkgs; [
     zellij
     tree
     moreutils
-    duf # Disk Usage 
+    duf # Disk Usage
+    ansible-language-server
     aria2 # Better wget
     bat # Better cat
-    entr # Run Command on file change
-    # zeek # Shell Command example Collection
-    eza # Better ls
-    nodePackages.bash-language-server # Bash Autocompletion
-    alacritty
-    nil
-    lnav # Logfile navigator
-    keepassxc
-    meh # Super Light wait image viewer
+    bats # Bash Unit testing
     chromium
+    csvtool
+    duf # Disk Usage
+    entr # Run Command on file change
+    eza # Better ls
+    imagemagickBig
+    jq
+    keepassxc
+    lnav # Logfile navigator
+    meh # Super Light wait image viewer
+    moreutils
     neofetch
+    nil
+    nixfmt-rfc-style
+    nodePackages.bash-language-server # Bash Autocompletion
+    shfmt
+    sttr # Easy String manipulation cli tool
+    tree
+    tree-sitter
+    yamlfmt
+    yaml-language-server
+    yazi
+    brave
+    rofi
   ];
 }

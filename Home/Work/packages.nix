@@ -1,7 +1,7 @@
-{ config, pkgs, ...}:
+{ config, pkgs, ... }:
 
-let 
-  stable = import <nixpkgs-stable> {};
+let
+  stable = import <nixpkgs-stable> { };
 in
 {
   home.packages = with pkgs; [
@@ -9,12 +9,16 @@ in
     duf # Disk Usage
     sonar-scanner-cli # Scanning Software
     editorconfig-checker # Check .editorConfig
-    stable.jetbrains.clion  
-    asciinema 
+    stable.jetbrains.clion
+    asciinema
+    ansible
   ];
 
   nix = {
     package = pkgs.nix;
-    settings.experimental-features = [ "nix-command" "flakes" ];
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
   };
 }

@@ -2,7 +2,7 @@
 
 {
   programs.ssh = {
-    enable = true;
+    enable = false;
     addKeysToAgent = "yes";
     compression = true;
     extraConfig = ''
@@ -24,7 +24,6 @@
       };
     };
   };
-  
 
   services.ssh-agent.enable = true;
 }

@@ -1,11 +1,9 @@
-
 { config, pkgs, ... }:
 
 let
   nix-colors = import <nix-colors> { };
-in 
+in
 {
-
   imports = [
     nix-colors.homeManagerModules.default
     ../Common
@@ -14,7 +12,7 @@ in
   ];
 
   mymodules.labor = {
-    enable = true;
+    enable = false;
     jump = true;
   };
 
@@ -22,63 +20,51 @@ in
 
   home.username = "bjarne";
 
-
   programs.bash.initExtra = ''
-    if ! mountpoint -q /home/bjarne/Artifacts; then 
-      mkdir -p /home/bjarne/Artifacts
-      sudo mount -t vboxsf -o rw,uid=1000,gid=1000 art /home/bjarne/Artifacts
+    # if ! mountpoint -q /mnt/servicebot ; then
+    #   sudo mkdir -p /mnt/servicebot
+    #   sudo mount -t cifs //10.0.215.28/share /mnt/servicebot -o credentials=/home/bjarne/.config/Servicebot/credentials -o uid=1000 -o gid=1000 &
+    # fi
+
+    # if ! ssh-add -l | rg -q bjarne@bjarne-sdk ; then 
+    #   ssh-add ~/Github/MyNixosConfiguration/Home/Keys/bjarne-bjarne-sdk
+    # fi
+
+    if ! mountpoint -q /home/bjarne/Documents; then 
+      mkdir -p /home/bjarne/Documents
+      sudo mount -t vboxsf -o rw,uid=1000,gid=1000 doc /home/bjarne/Documents
     fi 
-  
-    if ! mountpoint -q /home/bjarne/Gear; then 
-      mkdir -p /home/bjarne/Gear
-      sudo mount -t vboxsf -o rw,uid=1000,gid=1000 gir /home/bjarne/Gear
-    fi
 
-    if ! mountpoint -q /home/bjarne/Images; then 
-      mkdir -p /home/bjarne/Images
-      sudo mount -t vboxsf -o rw,uid=1000,gid=1000 img /home/bjarne/Images
-    fi
+    export LANG=de_DE.UTF-8
 
+    PATH="$PATH:/snap/bin"
 
-    if ! mountpoint -q /home/bjarne/Logs; then 
-      mkdir -p /home/bjarne/Logs
-      sudo mount -t vboxsf -o rw,uid=1000,gid=1000 log /home/bjarne/Logs
-    fi
-
-    if ! mountpoint -q /home/bjarne/Notes; then 
-      mkdir -p /home/bjarne/Notes
-      sudo mount -t vboxsf -o rw,uid=1000,gid=1000 not /home/bjarne/Notes
-    fi
-
-    if ! mountpoint -q /home/bjarne/Organisarotisches; then 
-      mkdir -p /home/bjarne/Organisarotisches
-      sudo mount -t vboxsf -o rw,uid=1000,gid=1000 org /home/bjarne/Organisarotisches 
-    fi
-
-      
-    if ! mountpoint -q /home/bjarne/Pki; then 
-      mkdir -p /home/bjarne/Pki
-      sudo mount -t vboxsf -o rw,uid=1000,gid=1000 pki /home/bjarne/Pki
-    fi
+    export PYENV_ROOT="$HOME/.pyenv"
+    [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+    eval "$(pyenv init - bash)"
+    eval "$(pyenv virtualenv-init -)"
   '';
-  
+
   home.homeDirectory = "/home/bjarne";
 
   home.packages = with pkgs; [
+    cifs-utils
     ncdu # A Amazing tool to find Large Files that you want to delete
     htop-vim # htop with vim bindings
     hishtory # A tool for a better bash history
     eza
     nil # A Lanuage Server
     glab
-    ranger
+    # ranger
     broot
     # magic-wormhole
     moreutils
-    helix
+    # helix
     gitui
     ventoy-full # Bootable usb tool
-    tilda
+    # tilda
+    _1password-cli
+    _1password-gui
   ];
 
   # Let Home Manager install and manage itself.

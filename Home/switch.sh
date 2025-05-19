@@ -5,7 +5,6 @@ set -euo pipefail
 
 source ./Scripts/Colors/colors.include
 
-
 # SCRIPT_PATH="$(realpath "$0")"
 # # cat $SCRIPT_PATH
 
@@ -16,35 +15,36 @@ source ./Scripts/Colors/colors.include
 #   local error_line=$BASH_LINENO
 #   local error_command=$BASH_COMMAND
 
-#   sed "$(($error_line-10)),$(($error_line-1))p;d" $SCRIPT_PATH 
+#   sed "$(($error_line-10)),$(($error_line-1))p;d" $SCRIPT_PATH
 #   echo -ne "$red"
-#   sed "$(($error_line))p;d" $SCRIPT_PATH 
+#   sed "$(($error_line))p;d" $SCRIPT_PATH
 #   echo -ne "$clr"
-#   sed "$(($error_line+1)),$(($error_line+10))p;d" $SCRIPT_PATH 
+#   sed "$(($error_line+1)),$(($error_line+10))p;d" $SCRIPT_PATH
 # }
 
-function channelExistsOrAdd () {
-  local channelName="${1}"; shift
+function channelExistsOrAdd() {
+  local channelName="${1}"
+  shift
   local channelUrl="${1}"
 
   local channelEntry=$(nix-channel --list | awk '{print $1}' | rg $channelName)
 
-  if [ -z "$channelEntry" ] ; then
+  if [ -z "$channelEntry" ]; then
     echo "Adding Channel ${channelName}"
     nix-channel --add "$channelUrl" "$channelName"
-  else 
+  else
     echo "Channel $channelName Allready Exists "
   fi
 }
 
-function main () {
+function main() {
   local USER="$1"
   local HOST="$2"
   local homeFileToInstall="./Users/${USER}-${HOST}-home.nix"
 
   COLORMODE="${COLORMODE:-dark}"
 
-  if ! [ -f "$homeFileToInstall" ] ; then
+  if ! [ -f "$homeFileToInstall" ]; then
     echo -e "$red ERROR: $clr File (${homeFileToInstall}) doesn't exist !!! $clr"
     exit 1
   fi
@@ -58,12 +58,12 @@ function main () {
   channelExistsOrAdd nixgl https://github.com/nix-community/nixGL/archive/main.tar.gz
 
   echo -e "$grn Update Nix Channels $clr"
-  # nix-channel --update
-  
+  nix-channel --update
+
   echo -e "$grn Installing File ${homeFileToInstall} $clr"
   export NIXPKGS_ALLOW_UNFREE=1
   # home-manager switch -b backup --file "${homeFileToInstall}" -A "$COLORMODE"
-  home-manager switch -b backup --file "${homeFileToInstall}" 
+  home-manager switch -b backup --file "${homeFileToInstall}"
 }
 
 main "$(whoami)" "$(hostname)"

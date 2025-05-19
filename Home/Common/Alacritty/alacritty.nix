@@ -1,4 +1,4 @@
-{ config, pkgs, ...}:
+{ config, pkgs, ... }:
 
 {
   # home.file."alacritty.toml" = {
@@ -6,19 +6,26 @@
   #   target = ".config/alacritty/alacrity.toml";
   # };
 
+  home.packages = [
+    pkgs.nerd-fonts.fira-code
+  ];
+
   programs.alacritty.enable = true;
   programs.alacritty.settings = {
-    font = {
-      normal = {
-        family = "Fira Code Nerd Font";
-        style = "Regular";
-      };
-      builtin_box_drawing = true;
-    };
-  
+    # font = {
+    #   normal = {
+    #     family = "FiraMono Code Nerd Font";
+    #     style = "Regular";
+    #   };
+    #   builtin_box_drawing = true;
+    # };
+
     window = {
       decorations = "Full";
-      padding = { x=10; y=10;};
+      padding = {
+        x = 10;
+        y = 10;
+      };
       dynamic_title = true;
     };
     mouse = {
@@ -26,13 +33,16 @@
     };
 
     cursor = {
-      style = { shape = "Block"; blinking="On"; };
+      style = {
+        shape = "Block";
+        blinking = "On";
+      };
     };
 
     colors = {
       primary = {
-        background= "#${config.colorScheme.palette.base00}";
-        foreground= "#${config.colorScheme.palette.base05}";
+        background = "#${config.colorScheme.palette.base00}";
+        foreground = "#${config.colorScheme.palette.base05}";
       };
     };
   };
