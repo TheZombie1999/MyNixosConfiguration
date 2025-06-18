@@ -10,15 +10,15 @@ nix-shell '<home-manager>' -A install
 
 ## Install Nix
 
-For A Muli-user install run:
+For A muli-user install run:
 ```bash
   sh <(curl -L https://nixos.org/nix/install) --daemon
 ```
 
 
-## Download Repo to new host
+## Download the repository to new host
 
-Genertate Key and add to github
+Genertate key and add to GitHub
 ```bash
   ssh-keygen 
 ```
@@ -28,7 +28,7 @@ Get the Repository
   git clone git@github.com:TheZombie1999/MyHomeConfiguration.git
 ```
 
-Move the new ssh-key to the Keys Folder and then run the `encrypt.sh` script.
+Move the new SSH key to the "Keys" folder and then run the  encrypt.sh script.
 
 
 

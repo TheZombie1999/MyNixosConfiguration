@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, home-manager, nix-colors, inputs, ... }:
+{ config, pkgs, home-manager, nix-colors, inputs, lib, ... }:
 
 {
   imports =
@@ -88,9 +88,27 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
+  # services.xserver.displayManager.gdm.enable = true;
+  # services.displayManager.ly.enable = true;
+  # services.displayManager.ly.settings = {
+  #   lang = "de";
+  # };
+  #
+  # services.displayManager.sddm.enable = true;
+  # services.displayManager.sddm.wayland.enable = false;
+  # services.displayManager.sddm.theme = "sugar-dark";
+  #
+
+  services.xserver.displayManager.lightdm.enable = true;
+
+  
   services.xserver.desktopManager.gnome.enable = true;
   services.xserver.windowManager.i3.enable = true;
+  programs.hyprland.enable = true;
+  programs.niri.enable = true;
+  
+  
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -133,7 +151,7 @@
   users.users.tim = {
     isNormalUser = true;
     description = "tim";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "dialout" "onepassword-cli" ];
   };
 
   # home-manager.users.tim = import ./../Home/Users/tim-moab-home.nix;
@@ -153,7 +171,50 @@
     prismlauncher
     helix
     wezterm
+    helix
+    htop
+    git
+    kitty
+    sddm-sugar-dark
+    sddm-astronaut
   ];
+
+  programs._1password.enable = true;
+  programs._1password-gui.enable = true;
+  programs._1password-gui.polkitPolicyOwners = [ "tim" ];
+  services.pcscd.enable = true;
+  security.polkit.debug = true;
+
+
+  services.udev.packages = [ pkgs.yubikey-personalization ];
+
+  security.pam.yubico = {
+   enable = true;
+   debug = true;
+   mode = "challenge-response";
+   id = [ "13336795" ];
+  };
+
+  security.pam.services = {
+    login.u2fAuth = true;
+    login.unixAuth = false;
+    sudo.u2fAuth = true;
+    sudo.unixAuth = false;
+    i3lock.unixAuth = false;
+  };
+
+  programs.xss-lock = let
+    background = pkgs.callPackage ./../Home/Backgrounds/package.nix {};
+  in{
+    enable = true;
+    lockerCommand = "${pkgs.i3lock}/bin/i3lock --image=${background}/image.png --show-failed-attempts";
+  };
+
+  programs.i3lock = {
+    enable = true;
+    u2fSupport = true;
+  };
+
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -163,10 +224,18 @@
   #   enableSSHSupport = true;
   # };
 
-  # List services that you want to enable:
+  # List services that you want to enable
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
+  services.udev.extraRules = ''
+      ACTION=="remove",\
+       ENV{ID_BUS}=="usb",\
+       ENV{ID_MODEL_ID}=="0407",\
+       ENV{ID_VENDOR_ID}=="1050",\
+       ENV{ID_VENDOR}=="Yubico",\
+       RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
+  '';
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

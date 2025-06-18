@@ -48,6 +48,7 @@
         "${modifier}+Shift+l" = "move right";
         "${modifier}+Return" = "exec alacritty";
         "${modifier}+p" = "exec alacritty";
+        "${modifier}+q" = "exec loginctl lock-session";
       };
       colors = {
         background = "#282828";

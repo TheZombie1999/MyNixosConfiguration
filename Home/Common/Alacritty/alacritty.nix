@@ -19,6 +19,7 @@
     window = {
       decorations = "Full";
       padding = { x=10; y=10;};
+      dynamic_title = true;
     };
     mouse = {
       hide_when_typing = true;

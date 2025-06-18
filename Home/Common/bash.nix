@@ -1,6 +1,11 @@
 { config, pkgs, lib, ...}:
 
 {
+
+    home.packages = with pkgs; [
+      chatgpt-shell-cli
+    ];
+
     programs.bash = { 
       enable = true;
       enableCompletion = true;
@@ -31,8 +36,10 @@
 
 
         export EDITOR=hx
+        export OPENAI_KEY="op://Money/Chatgpt - Api key/password"
       ''; 
       shellAliases = {     
+        chatgpt = "op run -- chatgpt.sh";
         brunel="open \"https://connect.brunel.net/\"";
 
         ls="eza --group-directories-first -I \"jre|snap|Music|CLionProjects|Desktop|Pictures|Projects\"";
