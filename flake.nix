@@ -11,21 +11,35 @@
   };
 
   outputs = { nixpkgs, home-manager, nix-colors, ... }@inputs: {
-    nixosConfigurations = {
-        "microstar" = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = { inherit inputs; inherit home-manager; inherit nix-colors; };
-            modules = [
-              ./Maschines/microstar.nix
-            ];
+      nixosConfigurations = {
+          "microstar" = nixpkgs.lib.nixosSystem {
+              system = "x86_64-linux";
+              specialArgs = { inherit inputs; inherit home-manager; inherit nix-colors; };
+              modules = [
+                ./Maschines/microstar.nix
+              ];
+          };
+          "moab" = nixpkgs.lib.nixosSystem {
+              system = "x86_64-linux";
+              specialArgs = { inherit inputs; inherit home-manager; inherit nix-colors; };
+              modules = [
+                ./Maschines/moab.nix
+              ];
+          };
+          "lenovo" = nixpkgs.lib.nixosSystem {
+              system = "x86_64-linux";
+              specialArgs = { inherit inputs; inherit home-manager; inherit nix-colors; };
+              modules = [
+                ./Maschines/lenovo.nix
+              ];
+          };
+          "wsl" = nixpkgs.lib.nixosSystem {
+              system = "x86_64-linux";
+              specialArgs = { inherit inputs; inherit home-manager; inherit nix-colors; };
+              modules = [
+                ./Maschines/wsl.nix
+              ];
+          };
         };
-        "moab" = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = { inherit inputs; inherit home-manager; inherit nix-colors; };
-            modules = [
-              ./Maschines/moab.nix
-            ];
-        };
-      };
   };
 }
