@@ -1,0 +1,7 @@
+
+
+[mgr]
+prepend_keymap = [
+	{ on = "f", run = 'plugin test2', desc = "Just for test!" }
+	# { on = "z", run = 'zellij edit cc', desc = "" },
+]

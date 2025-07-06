@@ -37,6 +37,8 @@
 
         export EDITOR=hx
         export OPENAI_KEY="op://Money/Chatgpt - Api key/password"
+
+         eval "$(zellij setup --generate-auto-start bash)"
       ''; 
       shellAliases = {     
         chatgpt = "op run -- chatgpt.sh";

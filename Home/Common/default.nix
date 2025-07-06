@@ -11,5 +11,6 @@
     ./bat.nix
     ./Ov/ov.nix
     ./Alacritty
+    ./Zellij
   ];
 }

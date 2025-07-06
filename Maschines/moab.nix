@@ -13,6 +13,8 @@
       home-manager.nixosModules.home-manager
     ];
 
+  boot.kernelParams = [ "split_lock_detect=off" ];
+
    nix.extraOptions = ''
         trusted-users = root tim
     '';
@@ -62,6 +64,18 @@
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+  hardware = {
+    graphics = {
+        enable = true;
+        enable32Bit = true;
+    };
+
+    amdgpu.amdvlk = {
+        enable = true;
+        support32Bit.enable = true;
+    };
+};
 
   # Enable networking
   networking.networkmanager.enable = true;

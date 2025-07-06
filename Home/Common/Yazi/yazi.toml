@@ -1,0 +1,26 @@
+
+[mgr]
+ratio = [ 1, 2, 2]
+# linemode = "size_and_mtime"
+
+[[plugin.prepend_fetchers]]
+id   = "git"
+name = "*"
+run  = "git"
+
+[[plugin.prepend_fetchers]]
+id   = "git"
+name = "*/"
+run  = "git"
+
+[opener]
+zellij = [
+  { run = "zellij edit $0", orphan = true, block = false },
+]
+
+[open]
+prepend_rules = [
+	{ name = "*.nix", use = "zellij" },
+]
+
+
