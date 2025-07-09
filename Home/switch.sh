@@ -62,6 +62,7 @@ function main() {
 
   echo -e "$grn Installing File ${homeFileToInstall} $clr"
   export NIXPKGS_ALLOW_UNFREE=1
+  export NIXPKGS_ALLOW_INSECURE=1
   # home-manager switch -b backup --file "${homeFileToInstall}" -A "$COLORMODE"
   home-manager switch -b backup --file "${homeFileToInstall}"
 }

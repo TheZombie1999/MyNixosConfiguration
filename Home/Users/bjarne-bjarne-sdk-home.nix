@@ -63,6 +63,8 @@ in
     gitui
     ventoy-full # Bootable usb tool
     # tilda
+    # mygit
+    git
     _1password-cli
     _1password-gui
   ];
