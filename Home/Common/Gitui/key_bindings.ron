@@ -8,5 +8,5 @@
     open_help: Some(( code: F(1), modifiers: "")),
 
     status_reset_item: Some(( code: Char('U'), modifiers: "SHIFT")),
-    commit: Some(( code: Char('s'), modifiers: "ALT")),
+    commit: Some(( code: Char('s'), modifiers: "CONTROL")),
 )
