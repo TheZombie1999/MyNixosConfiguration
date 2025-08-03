@@ -10,9 +10,11 @@ layout {
         }
     }
     tab {
-        pane {
-            command "bash"
-            args "-i" "-c" "yy"
+        children {
+            pane {
+                command "bash"
+                args "-i" "-c" "yy"
+            }
         }
     }
     swap_tiled_layout {
