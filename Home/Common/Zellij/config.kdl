@@ -16,6 +16,7 @@ keybinds clear-defaults=true {
         bind "Ctrl o" { LaunchOrFocusPlugin "session-manager" {
                 floating true
                 move_to_focused_tab true
+                close_on_exit true
             }
         }
 
@@ -39,7 +40,11 @@ keybinds clear-defaults=true {
         bind "h" { GoToPreviousTab; }
         bind "l" { GoToNextTab; }
         bind "r" { SwitchToMode "renametab"; TabNameInput 0; }
-
+        bind "s" {
+            Run "selectLayout" {
+                floating true
+            }
+        }
     }
     pane {
         // Rename 
@@ -70,7 +75,6 @@ keybinds clear-defaults=true {
         bind "Ctrl u" { HalfPageScrollUp; }
 
         bind "p" { DumpScreen "/tmp/my-dump.txt"; }
-
     }
 
     renametab {
