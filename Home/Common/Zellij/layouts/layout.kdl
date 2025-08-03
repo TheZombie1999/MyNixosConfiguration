@@ -1,4 +1,8 @@
 layout {
+    top_bar {
+        height 1
+        # Weitere Optionen für den oberen Balken können hier eingefügt werden
+    }
     pane {
         command "bash"
         args "-i" "-c" "yy"
@@ -36,5 +40,9 @@ layout {
                 }
             }
         }
+    }
+    bottom_bar {
+        height 1
+        # Weitere Optionen für den unteren Balken können hier eingefügt werden
     }
 }
