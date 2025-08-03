@@ -43,6 +43,7 @@ keybinds clear-defaults=true {
         bind "s" {
             Run "selectLayout" {
                 floating true
+                close_on_exit true
             }
         }
     }
