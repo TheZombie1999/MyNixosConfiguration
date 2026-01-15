@@ -65,6 +65,10 @@ function main() {
   export NIXPKGS_ALLOW_INSECURE=1
   # home-manager switch -b backup --file "${homeFileToInstall}" -A "$COLORMODE"
   home-manager switch -b backup --file "${homeFileToInstall}"
+
+  # Create Stable Link for shfmt
+  mkdir -p ~/.local/bin
+  ln -sf "$(which shfmt)" ~/.local/bin/shfmt
 }
 
 main "$(whoami)" "$(hostname)"

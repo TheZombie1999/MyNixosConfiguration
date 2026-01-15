@@ -2,26 +2,34 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, home-manager, nix-colors, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  home-manager,
+  nix-colors,
+  inputs,
+  ...
+}:
 
 {
-  imports =
-    [
-      ./../Hardware/microstar-hardware-configuration.nix
-      ./../Modules/ansible-pull.nix
-      inputs.sops-nix.nixosModules.sops
-      home-manager.nixosModules.home-manager
-    ];
+  imports = [
+    ./../Hardware/microstar-hardware-configuration.nix
+    ./../Modules/ansible-pull.nix
+    inputs.sops-nix.nixosModules.sops
+    home-manager.nixosModules.home-manager
+  ];
 
-  system.autoPull = let 
-    rebuild-nixos-vars = (import ./../Modules/yamlToSet.nix ) pkgs ./../Ansible/rebuild-nixos-vars.yml;
-  in
-  {
-    enable = true;
-    sshKey = config.sops.secrets."autoPullPrivateKey".path;
-    repo = "git@github.com:TheZombie1999/MyNixosConfiguration.git";
-    dest = rebuild-nixos-vars.location;
-  };
+  system.autoPull =
+    let
+      rebuild-nixos-vars = (import ./../Modules/yamlToSet.nix) pkgs ./../Ansible/rebuild-nixos-vars.yml;
+    in
+    {
+      enable = true;
+      sshKey = config.sops.secrets."autoPullPrivateKey".path;
+      repo = "git@github.com:TheZombie1999/MyNixosConfiguration.git";
+      dest = rebuild-nixos-vars.location;
+    };
 
   sops.defaultSopsFile = ../Secrets/secrets.yaml;
   sops.defaultSopsFormat = "yaml";
@@ -35,24 +43,29 @@
   home-manager.extraSpecialArgs = { inherit nix-colors; };
 
   nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   services.minecraft-server = {
     enable = true;
     eula = true;
 
-    package = let
-      version = "1.21.3";
-      url = "https://piston-data.mojang.com/v1/objects/45810d238246d90e811d896f87b14695b7fb6839/server.jar";
-      sha256 = "1ddgz0dh830869v82q0cp3zkyanl1p45f7ccbvgrr0y00advhlz1";
-     in (pkgs.minecraft-server.overrideAttrs (old: rec{
-      name = "minecraft-server-${version}";
-      inherit version;
+    package =
+      let
+        version = "1.21.3";
+        url = "https://piston-data.mojang.com/v1/objects/45810d238246d90e811d896f87b14695b7fb6839/server.jar";
+        sha256 = "1ddgz0dh830869v82q0cp3zkyanl1p45f7ccbvgrr0y00advhlz1";
+      in
+      (pkgs.minecraft-server.overrideAttrs (old: rec {
+        name = "minecraft-server-${version}";
+        inherit version;
 
-      src = pkgs.fetchurl {
-        inherit url sha256;
-      };
-    }));
+        src = pkgs.fetchurl {
+          inherit url sha256;
+        };
+      }));
   };
 
   services.openvscode-server.enable = true;
@@ -61,8 +74,8 @@
   services.openvscode-server.withoutConnectionToken = false;
   services.openvscode-server.connectionToken = "Test";
 
-  services.tailscale = { 
-    enable = true; 
+  services.tailscale = {
+    enable = true;
     authKeyFile = config.sops.secrets."microstar_tailscale_key".path;
   };
 
@@ -71,11 +84,11 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
- 
+
   # networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
 
   nix.optimise = {
     automatic = true;
@@ -96,7 +109,12 @@
     isNormalUser = true;
     home = "/home/tim";
     description = "My Standard User";
-    extraGroups = [ "wheel" "networkmanager" "audio" "minecraft" ];
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+      "audio"
+      "minecraft"
+    ];
   };
 
   # Configure network proxy if necessary
@@ -107,18 +125,16 @@
   # i18n.defaultLocale = "en_US.UTF-8";
   console = {
     font = "Lat2-Terminus16";
-  #   keyMap = "us";
+    #   keyMap = "us";
     useXkbConfig = true; # use xkb.options in tty.
   };
 
   # Enable the X11 windowing system.
   # services.xserver.enable = true;
 
-
   # Enable the Plasma 5 Desktop Environment.
   # services.xserver.displayManager.sddm.enable = true;
   # services.xserver.desktopManager.plasma5.enable = true;
-  
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "de";
@@ -126,7 +142,6 @@
 
   # Enable CUPS to print documents.
   # services.printing.enable = true;
-
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -169,8 +184,6 @@
     frontendHostname = "microstar";
   };
 
-  
-
   # services = {
   #     syncthing = {
   #         enable = true;
@@ -179,7 +192,6 @@
   #         configDir = "/home/tim/.config/syncthing";   # Folder for Syncthing's settings and keys
   #     };
   # };
-
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -193,4 +205,3 @@
   # system.copySystemConfiguration = true;
   system.stateVersion = "24.05";
 }
-

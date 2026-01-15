@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   home.packages = with pkgs; [
@@ -6,7 +6,6 @@
     tree
     moreutils
     duf # Disk Usage
-    ansible-language-server
     aria2 # Better wget
     bat # Better cat
     bats # Bash Unit testing
@@ -34,5 +33,6 @@
     yazi
     brave
     rofi
+    unar
   ];
 }
