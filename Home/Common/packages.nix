@@ -22,7 +22,7 @@
     moreutils
     neofetch
     nil
-    nixfmt-rfc-style
+    nixfmt
     nodePackages.bash-language-server # Bash Autocompletion
     shfmt
     sttr # Easy String manipulation cli tool

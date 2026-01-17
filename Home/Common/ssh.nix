@@ -3,8 +3,6 @@
 {
   programs.ssh = {
     enable = false;
-    addKeysToAgent = "yes";
-    compression = true;
     extraConfig = ''
       # IdentityFile ~/.ssh/netzfabrik-gitlabkey.rsa
       # IdentityFile ~/.ssh/personalgithubkey

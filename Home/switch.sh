@@ -5,23 +5,6 @@ set -euo pipefail
 
 source ./Scripts/Colors/colors.include
 
-# SCRIPT_PATH="$(realpath "$0")"
-# # cat $SCRIPT_PATH
-
-# trap error ERR
-
-# error (){
-#   local error_code=$?
-#   local error_line=$BASH_LINENO
-#   local error_command=$BASH_COMMAND
-
-#   sed "$(($error_line-10)),$(($error_line-1))p;d" $SCRIPT_PATH
-#   echo -ne "$red"
-#   sed "$(($error_line))p;d" $SCRIPT_PATH
-#   echo -ne "$clr"
-#   sed "$(($error_line+1)),$(($error_line+10))p;d" $SCRIPT_PATH
-# }
-
 function channelExistsOrAdd() {
   local channelName="${1}"
   shift
@@ -39,8 +22,8 @@ function channelExistsOrAdd() {
 
 function main() {
   local USER="$1"
-  local HOST="$2"
-  local homeFileToInstall="./Users/${USER}-${HOST}-home.nix"
+  local MACHINEID="$2"
+  local homeFileToInstall="./Users/${MACHINEID}-${USER}-home.nix"
 
   COLORMODE="${COLORMODE:-dark}"
 
@@ -63,12 +46,14 @@ function main() {
   echo -e "$grn Installing File ${homeFileToInstall} $clr"
   export NIXPKGS_ALLOW_UNFREE=1
   export NIXPKGS_ALLOW_INSECURE=1
+
   # home-manager switch -b backup --file "${homeFileToInstall}" -A "$COLORMODE"
-  home-manager switch -b backup --file "${homeFileToInstall}"
+  # home-manager switch -b backup --file "${homeFileToInstall}"
+  home-manager switch -b backup --file "${homeFileToInstall}" -I "home-manager=${HOME}/home-manager" --show-trace
 
   # Create Stable Link for shfmt
   mkdir -p ~/.local/bin
   ln -sf "$(which shfmt)" ~/.local/bin/shfmt
 }
 
-main "$(whoami)" "$(hostname)"
+main "$(whoami)" "$(cat /etc/machine-id)"
