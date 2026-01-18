@@ -1,5 +1,10 @@
-{ ...}:
+{ pkgs, ...}:
 {
+
+  home.packages = [
+    (pkgs.writeShellScriptBin "bundle" (builtins.readFile ./launch.sh) )
+  ];
+
   programs.zellij = {
     enable = true;
   };

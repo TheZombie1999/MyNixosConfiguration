@@ -4,6 +4,11 @@ keybinds clear-defaults=true {
         bind "esc" { SwitchToMode "normal"; }
     }
     normal {
+        bind "Ctrl b" {
+            Run "bundle" {
+                close_on_exit true
+            }
+        }
         bind "Ctrl t" { SwitchToMode "tab"; };
         bind "Ctrl w" { SwitchToMode "pane"; };
         bind "Alt m" { SwitchToMode "move"; };
@@ -13,6 +18,15 @@ keybinds clear-defaults=true {
                 move_to_focused_tab true
             }
         }
+
+        bind "Ctrl y" {
+            LaunchOrFocusPlugin "file:~/.config/zellij/plugins/zellij-workspace.wasm" {
+                floating true
+            
+                replace_current_session true // default false: replace current session with selected layout
+                debug false                     // display debug info, config, parse command etc
+        }
+    }
     }
 
     shared_except "locked" "session" {
@@ -43,10 +57,10 @@ keybinds clear-defaults=true {
 
         // Move
         bind "p" { SwitchFocus; }
-        bind "h" { MoveFocus "left"; }
+        bind "h" { MoveFocusOrTab "left"; }
         bind "j" { MoveFocus "down"; }
         bind "k" { MoveFocus "up"; }
-        bind "l" { MoveFocus "right"; }
+        bind "l" { MoveFocusOrTab "right"; }
 
         // Close
         bind "q" { CloseFocus; }

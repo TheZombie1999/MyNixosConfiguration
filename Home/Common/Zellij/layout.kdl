@@ -21,18 +21,7 @@ layout {
                     size "20%"
                 }
                 pane stacked=true {
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
+                    children
                 }
             }
         }
