@@ -42,7 +42,7 @@
       eval "$(zellij setup --generate-auto-start bash)"
     '';
     shellAliases = {
-      ls = "eza --group-directories-first -I \"jre|snap|Music|CLionProjects|Desktop|Pictures|Projects\"";
+      ls = "eza --group-directories-first -I \"jre|snap|Music|CLionProjects|Desktop\"";
       ip = "ip -c";
       ll = "eza --long --git --header --no-user --no-time --group-directories-first";
       la = "eza --all -1 --color=never | grep -E \"^\\..*$\"";
