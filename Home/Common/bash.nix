@@ -6,9 +6,6 @@
 }:
 
 {
-  home.packages = with pkgs; [
-  ];
-
   programs.bash = {
     enable = true;
     enableCompletion = true;
@@ -53,11 +50,6 @@
   };
 
   programs.atuin = {
-    enable = true;
-    enableBashIntegration = true;
-  };
-
-  programs.yazi = {
     enable = true;
     enableBashIntegration = true;
   };

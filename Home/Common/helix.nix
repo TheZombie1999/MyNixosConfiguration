@@ -9,6 +9,7 @@
     ruff
     python312Packages.python-lsp-server
     typescript-language-server
+    lua51Packages.lua-lsp
   ];
 
   programs.helix = {

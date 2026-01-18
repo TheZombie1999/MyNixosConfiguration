@@ -11,7 +11,6 @@
     bats # Bash Unit testing
     chromium
     csvtool
-    duf # Disk Usage
     entr # Run Command on file change
     eza # Better ls
     imagemagickBig
@@ -19,14 +18,12 @@
     keepassxc
     lnav # Logfile navigator
     meh # Super Light wait image viewer
-    moreutils
     neofetch
     nil
     nixfmt
     nodePackages.bash-language-server # Bash Autocompletion
     shfmt
     sttr # Easy String manipulation cli tool
-    tree
     tree-sitter
     yamlfmt
     yaml-language-server
