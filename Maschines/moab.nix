@@ -2,28 +2,37 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, home-manager, nix-colors, inputs, lib, ... }:
+{
+  config,
+  pkgs,
+  home-manager,
+  nix-colors,
+  inputs,
+  ...
+}:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./../Hardware/moab-hardware-configuration.nix
-      ./../Modules/ansible-pull.nix
-      inputs.sops-nix.nixosModules.sops
-      home-manager.nixosModules.home-manager
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./../Hardware/moab-hardware-configuration.nix
+    inputs.sops-nix.nixosModules.sops
+    home-manager.nixosModules.home-manager
+  ];
 
   boot.kernelParams = [ "split_lock_detect=off" ];
 
-   nix.extraOptions = ''
-        trusted-users = root tim
-    '';
+  nix.extraOptions = ''
+    trusted-users = root tim
+  '';
 
-  fileSystems."/mnt" =
-    { device = "/dev/sda3";
-      fsType = "ntfs-3g"; 
-      options = [ "rw" "uid=1000"];
-    };
+  #fileSystems."/mnt" = {
+    #device = "/dev/sda3";
+    #fsType = "ntfs-3g";
+    #options = [
+      #"rw"
+      #"uid=1000"
+    #];
+  #};
 
   home-manager.users.tim = import ./../Home/Users/tim-moab-home.nix;
   home-manager.extraSpecialArgs = { inherit nix-colors; };
@@ -34,17 +43,21 @@
   sops.secrets.microstar_tailscale_key = { };
   sops.secrets.autoPullPrivateKey = { };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  
-  system.autoPull = let 
-    rebuild-nixos-vars = (import ./../Modules/yamlToSet.nix ) pkgs ./../Ansible/rebuild-nixos-vars.yml;
-  in
-  {
-    enable = true;
-    sshKey = config.sops.secrets."autoPullPrivateKey".path;
-    repo = "git@github.com:TheZombie1999/MyNixosConfiguration.git";
-    dest = rebuild-nixos-vars.location;
-  };
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+
+  # system.autoPull =
+  #   let
+  #     rebuild-nixos-vars = (import ./../Modules/yamlToSet.nix) pkgs ./../Ansible/rebuild-nixos-vars.yml;
+  #   in
+  #   {
+  #     enable = true;
+  #     sshKey = config.sops.secrets."autoPullPrivateKey".path;
+  #     repo = "git@github.com:TheZombie1999/MyNixosConfiguration.git";
+  #     dest = rebuild-nixos-vars.location;
+  #   };
 
   programs.steam = {
     enable = true;
@@ -67,15 +80,10 @@
 
   hardware = {
     graphics = {
-        enable = true;
-        enable32Bit = true;
+      enable = true;
+      enable32Bit = true;
     };
-
-    amdgpu.amdvlk = {
-        enable = true;
-        support32Bit.enable = true;
-    };
-};
+  };
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -115,13 +123,17 @@
 
   services.xserver.displayManager.lightdm.enable = true;
 
-  
   services.xserver.desktopManager.gnome.enable = true;
   services.xserver.windowManager.i3.enable = true;
   programs.hyprland.enable = true;
   programs.niri.enable = true;
-  
-  
+
+  services = {
+    # desktopManager.plasma6.enable = true;
+    # displayManager.sddm.enable = true;
+    # displayManager.sddm.wayland.enable = true;
+  };
+
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   # Configure keymap in X11
@@ -129,7 +141,7 @@
     layout = "de";
     variant = "";
   };
-  
+
   fonts.packages = with pkgs; [
     nerd-fonts.zed-mono
     nerd-fonts.martian-mono
@@ -165,7 +177,12 @@
   users.users.tim = {
     isNormalUser = true;
     description = "tim";
-    extraGroups = [ "networkmanager" "wheel" "dialout" "onepassword-cli" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "dialout"
+      "onepassword-cli"
+    ];
   };
 
   # home-manager.users.tim = import ./../Home/Users/tim-moab-home.nix;
@@ -199,14 +216,13 @@
   services.pcscd.enable = true;
   security.polkit.debug = true;
 
-
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
   security.pam.yubico = {
-   enable = true;
-   debug = true;
-   mode = "challenge-response";
-   id = [ "13336795" ];
+    enable = true;
+    debug = true;
+    mode = "challenge-response";
+    id = [ "13336795" ];
   };
 
   security.pam.services = {
@@ -217,18 +233,21 @@
     i3lock.unixAuth = false;
   };
 
-  programs.xss-lock = let
-    background = pkgs.callPackage ./../Home/Backgrounds/package.nix {};
-  in{
-    enable = true;
-    lockerCommand = "${pkgs.i3lock}/bin/i3lock --image=${background}/image.png --show-failed-attempts";
-  };
+  programs.corectrl.enable = true;
+
+  programs.xss-lock =
+    let
+      background = pkgs.callPackage ./../Home/Backgrounds/package.nix { };
+    in
+    {
+      enable = true;
+      lockerCommand = "${pkgs.i3lock}/bin/i3lock --image=${background}/image.png --show-failed-attempts";
+    };
 
   programs.i3lock = {
     enable = true;
     u2fSupport = true;
   };
-
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -243,12 +262,12 @@
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
   services.udev.extraRules = ''
-      ACTION=="remove",\
-       ENV{ID_BUS}=="usb",\
-       ENV{ID_MODEL_ID}=="0407",\
-       ENV{ID_VENDOR_ID}=="1050",\
-       ENV{ID_VENDOR}=="Yubico",\
-       RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
+    ACTION=="remove",\
+     ENV{ID_BUS}=="usb",\
+     ENV{ID_MODEL_ID}=="0407",\
+     ENV{ID_VENDOR_ID}=="1050",\
+     ENV{ID_VENDOR}=="Yubico",\
+     RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
   '';
 
   # Open ports in the firewall.

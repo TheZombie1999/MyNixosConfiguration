@@ -18,6 +18,7 @@ run  = "git"
 [opener]
 zellij = [
   { run = "zellij action move-focus right; zellij action move-focus up ; zellij edit %s", orphan = true, block = false },
+
 ]
 
 [open]

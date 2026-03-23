@@ -10,20 +10,19 @@ layout {
         }
     }
     tab {
-        children {
-            pane {
-                command "bash"
-                args "-i" "-c" "yy"
-            }
+        pane {
+            command "bash"
+            args "-i" "-c" "yy"
         }
     }
-    swap_tiled_layout {
-        tab exact_panes=2 {
+    swap_tiled_layout name="Test" {
+        tab max_panes=2 {
             pane split_direction="vertical" {
                 pane {
                     command "bash"
                     args "-i" "-c" "yy"
                 }
+                children
                 pane
             }
         }
@@ -35,20 +34,19 @@ layout {
                     size "20%"
                 }
                 pane stacked=true {
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
-                    pane
+                    children
                 }
             }
         }
+    }
+}
+
+keybinds {
+    pane {
+        // Create New Pane
+        bind "a" { NewPane ; SwitchToMode "normal"; }
+        bind "s" { NewPane ; SwitchToMode "normal"; }
+        bind "d" { NewPane ; SwitchToMode "normal"; }
+        bind "f" { NewPane ; SwitchToMode "normal"; }
     }
 }

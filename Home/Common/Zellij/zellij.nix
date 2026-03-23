@@ -19,4 +19,9 @@
       target = "zellij/plugins";
       recursive = true;
   };
+  xdg.configFile."layouts" = {
+      source = ./layouts;
+      target = "zellij/layouts";
+      recursive = true;
+  };
 }
