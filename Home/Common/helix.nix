@@ -44,7 +44,6 @@
               ":new"
               ":insert-output ls"
             ];
-            n = ":run-shell-command neofetch --stdout";
             s = ":run-shell-command cd /home/bjarne/Github/MyNixosConfiguration/Home; ./switch.sh ; cd -";
           };
           "C-p" = "select_prev_sibling";

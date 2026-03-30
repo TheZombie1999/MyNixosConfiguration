@@ -18,7 +18,6 @@
     keepassxc
     lnav # Logfile navigator
     meh # Super Light wait image viewer
-    neofetch
     nil
     nixfmt
     nodePackages.bash-language-server # Bash Autocompletion

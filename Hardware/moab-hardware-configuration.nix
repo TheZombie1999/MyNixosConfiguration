@@ -19,6 +19,11 @@
       fsType = "ext4";
     };
 
+  fileSystems."/home" = {
+    device = "/dev/disk/by-label/HOME";
+    fsType = "ext4";
+  };
+
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/3A11-F779";
       fsType = "vfat";
