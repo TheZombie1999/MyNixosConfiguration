@@ -66,6 +66,8 @@
     localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
 
+  hardware.steam-hardware.enable = true;
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -208,6 +210,7 @@
     kitty
     sddm-sugar-dark
     sddm-astronaut
+    bubblewrap
   ];
 
   programs._1password.enable = true;
