@@ -15,6 +15,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./../Hardware/moab-hardware-configuration.nix
+    ./../Packages/OneDev/onedev-module.nix
     inputs.sops-nix.nixosModules.sops
     home-manager.nixosModules.home-manager
   ];

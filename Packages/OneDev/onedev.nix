@@ -40,8 +40,8 @@ stdenv.mkDerivation {
     cp -r . $out/opt/onedev/
 
     substituteInPlace $out/opt/onedev/conf/wrapper.conf \
-      --replace-fail "wrapper.logfile=../logs/console.log" "wrapper.logfile=/home/tim/logs/onedev-console.log" \
-      --replace-fail "wrapper.lang.folder=../lang" "wrapper.lang.folder=/home/tim/lang" \
+      --replace-fail "wrapper.logfile=../logs/console.log" "wrapper.logfile=/opt/onedev/logs/console.log" \
+      --replace-fail "wrapper.lang.folder=../lang" "wrapper.lang.folder=/opt/onedev/lang" \
       --replace-fail "wrapper.java.classpath.1=*.jar" "wrapper.java.classpath.1=$out/opt/onedev/boot/*.jar" \
       --replace-fail "wrapper.java.library.path.1=." "wrapper.java.library.path.1=$out/opt/onedev/boot/" 
       # --replace-fail "# wrapper.debug=TRUE" "wrapper.debug=TRUE"
