@@ -15,7 +15,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./../Hardware/moab-hardware-configuration.nix
-    ./../Packages/OneDev/onedev-module.nix
+    ./../Packages/OneDev/onedev-module-with-overlay.nix
     inputs.sops-nix.nixosModules.sops
     home-manager.nixosModules.home-manager
   ];
@@ -34,6 +34,8 @@
       #"uid=1000"
     #];
   #};
+  #
+  services.onedev.enable = true;
 
   home-manager.users.tim = import ./../Home/Users/tim-moab-home.nix;
   home-manager.extraSpecialArgs = { inherit nix-colors; };
