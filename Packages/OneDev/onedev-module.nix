@@ -10,7 +10,6 @@
 let
   cfg = config.services.onedev;
   opt = options.services.onedev;
-  onedev = pkgs.callPackage ./onedev.nix { };
 in
 {
   imports = [ ];
@@ -18,52 +17,47 @@ in
   options = {
     services.onedev = {
       enable = lib.mkEnableOption "onedev";
-      # package = lib.mkPackageOption pkgs "onedev" { example = onedev; };
-      statePath = lib.mkOption { };
+      installDir = lib.mkOption {
+        type = lib.types.str;
+        default = "/opt/onedev/";
+        description = "The folder Onedev reads and writes to.";
+      };
 
     };
 
   };
 
-  config = lib.mkIf cfg.enable {
+  config =
+    let
+      onedev = pkgs.callPackage ./onedev.nix { };
+      hibernateConfig = pkgs.callPackage ./hibernate-config.nix { installDir = cfg.installDir; };
+      serverConfig = pkgs.callPackage ./server-config.nix { installDir = cfg.installDir; };
+    in
+    lib.mkIf cfg.enable {
 
-    systemd.tmpfiles.rules = [
-      "f /opt/onedev/logs/server.log 0660 root root -"
-      "f /opt/onedev/logs/console.log 0660 root root -"
-    ];
+      fileSystems = {
+        "/opt/onedev" = {
+          overlay = {
+            workdir = "/opt/overlay/onedev/work";
+            upperdir = "/opt/overlay/onedev/upper";
+            lowerdir = [
+              "${hibernateConfig}/opt/onedev"
+              "${serverConfig}/opt/onedev"
+              "${onedev}/opt/onedev"
+            ];
+          };
+        };
+      };
 
-    systemd.services."onedev-server" = {
-      enable = true;
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "simple";
-        ExecStartPre = "${pkgs.coreutils}/bin/ls /opt/onedev/conf";
-        ExecStart = "${onedev}/bin/onedev";
-        User = "root";
-
-        BindPaths = [
-          "${onedev}/opt/onedev/conf/:/opt/onedev/conf/"
-          "${onedev}/opt/onedev/incompatibilities/incompatibilities.md:/opt/onedev/incompatibilities/incompatibilities.md"
-          "${onedev}/opt/onedev/release.properties:/opt/onedev/release.properties"
-          "${onedev}/opt/onedev/agent/bin:/opt/onedev/agent/bin"
-          "${onedev}/opt/onedev/agent/conf:/opt/onedev/agent/conf"
-          "${onedev}/opt/onedev/lib:/opt/onedev/lib"
-
-          "${onedev}/opt/onedev/site/assets:/opt/onedev/site/assets"
-          "${onedev}/opt/onedev/site/assets/avatars:/opt/onedev/site/assets/avatars"
-          "${onedev}/opt/onedev/site/lib:/opt/onedev/site/lib"
-        ];
+      systemd.services."onedev-server" = {
+        enable = true;
+        after = [ "network.target" ];
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          Type = "simple";
+          ExecStart = "${onedev}/bin/onedev";
+          User = "root";
+        };
       };
     };
-
-    system.activationScripts.onedev = {
-      text = ''
-        mkdir -p /opt/onedev/
-        mkdir -p /opt/onedev/site
-        mkdir -p /opt/onedev/temp
-      '';
-    };
-
-  };
 }
