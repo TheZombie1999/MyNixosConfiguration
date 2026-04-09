@@ -9,7 +9,6 @@
   coreutils,
   git,
   curl,
-  extrapkgs ? [ ],
   logfile ? "/opt/onedev/logs/console.log",
   langfolder ? "/opt/onedev/lang",
   installDir ? "/opt/onedev/",
@@ -26,11 +25,11 @@ stdenv.mkDerivation {
   };
 
   nativeBuildInputs = [ makeWrapper ];
-
-  # Use Java 17 (or 21) — recommended for current OneDev
   buildInputs = [
-    openjdk17
     fontconfig
+    coreutils
+    git
+    curl
     dejavu_fonts
   ];
 
@@ -40,36 +39,51 @@ stdenv.mkDerivation {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/opt/onedev
+    mkdir -p $out/
 
     # Copy the entire unpacked OneDev distribution
-    cp -r . $out/opt/onedev/
+    cp -r . $out/
 
-    substituteInPlace $out/opt/onedev/conf/wrapper.conf \
+    substituteInPlace $out/bin/apply-db-constraints.sh \
+        --replace-fail "/bin" ";/bin" \
+        --replace-fail "WRAPPER_CMD=\"../boot/wrapper\"" "WRAPPER_CMD=$out/boot/wrapper" \
+        --replace-fail "WRAPPER_CONF=\"../conf/wrapper.conf\"" "WRAPPER_CONF=$out/conf/wrapper.conf" \
+        --replace-fail "PIDDIR=\".\"" "PIDDIR=\"/opt/onedev\""
+    substituteInPlace $out/bin/backup-db.sh \
+        --replace-fail "/bin" ";/bin" \
+        --replace-fail "WRAPPER_CMD=\"../boot/wrapper\"" "WRAPPER_CMD=$out/boot/wrapper" \
+        --replace-fail "WRAPPER_CONF=\"../conf/wrapper.conf\"" "WRAPPER_CONF=$out/conf/wrapper.conf" \
+        --replace-fail "PIDDIR=\".\"" "PIDDIR=\"/opt/onedev\""
+    substituteInPlace $out/bin/reset-admin-password.sh \
+        --replace-fail "/bin" ";/bin" \
+        --replace-fail "WRAPPER_CMD=\"../boot/wrapper\"" "WRAPPER_CMD=$out/boot/wrapper" \
+        --replace-fail "WRAPPER_CONF=\"../conf/wrapper.conf\"" "WRAPPER_CONF=$out/conf/wrapper.conf" \
+        --replace-fail "PIDDIR=\".\"" "PIDDIR=\"/opt/onedev\""
+    substituteInPlace $out/bin/restore-db.sh \
+        --replace-fail "/bin" ";/bin" \
+        --replace-fail "WRAPPER_CMD=\"../boot/wrapper\"" "WRAPPER_CMD=$out/boot/wrapper" \
+        --replace-fail "WRAPPER_CONF=\"../conf/wrapper.conf\"" "WRAPPER_CONF=$out/conf/wrapper.conf"\
+        --replace-fail "PIDDIR=\".\"" "PIDDIR=\"/opt/onedev\""
+    substituteInPlace $out/bin/server.sh \
+        --replace-fail "/bin" ";/bin" \
+        --replace-fail "WRAPPER_CMD=\"../boot/wrapper\"" "WRAPPER_CMD=$out/boot/wrapper" \
+        --replace-fail "WRAPPER_CONF=\"../conf/wrapper.conf\"" "WRAPPER_CONF=$out/conf/wrapper.conf" \
+        --replace-fail "PIDDIR=\".\"" "PIDDIR=\"/opt/onedev\""
+    substituteInPlace $out/bin/upgrade.sh \
+        --replace-fail "/bin" ";bin" \
+        --replace-fail "WRAPPER_CMD=\"../boot/wrapper\"" "WRAPPER_CMD=$out/boot/wrapper" \
+        --replace-fail "WRAPPER_CONF=\"../conf/wrapper.conf\"" "WRAPPER_CONF=$out/conf/wrapper.conf" \
+        --replace-fail "PIDDIR=\".\"" "PIDDIR=\"/opt/onedev\""
+
+    substituteInPlace $out/conf/wrapper.conf \
       --replace-fail "wrapper.logfile=../logs/console.log" "wrapper.logfile=${logfile}" \
       --replace-fail "wrapper.lang.folder=../lang" "wrapper.lang.folder=${langfolder}" \
-      --replace-fail "wrapper.java.classpath.1=*.jar" "wrapper.java.classpath.1=$out/opt/onedev/boot/*.jar" \
-      --replace-fail "wrapper.java.library.path.1=." "wrapper.java.library.path.1=$out/opt/onedev/boot/" 
-      # --replace-fail "# wrapper.debug=TRUE" "wrapper.debug=TRUE"
+      --replace-fail "wrapper.java.classpath.1=*.jar" "wrapper.java.classpath.1=$out/boot/*.jar" \
+      --replace-fail "wrapper.java.library.path.1=." "wrapper.java.library.path.1=$out/boot/" \
+      --replace-fail "wrapper.java.command=java" "wrapper.java.command=${openjdk17}/bin/java" \
+      --replace-fail "wrapper.disable_console_input=TRUE" "wrapper.disable_console_input=FALSE"
 
-    echo "wrapper.java.additional.99=-DinstallDir=/opt/onedev/" >> $out/opt/onedev/conf/wrapper.conf   
-
-    makeWrapper $out/opt/onedev/boot/wrapper-linux-x86-64 $out/bin/onedev \
-      --set installDir "${installDir}" \
-      --set JAVA_HOME "${openjdk17}" \
-      --set PATH "${openjdk17}/bin:${
-        lib.makeBinPath (
-          [
-            coreutils
-            fontconfig
-            dejavu_fonts
-            git
-            curl
-          ]
-          ++ extrapkgs
-        )
-      }" \
-      --add-flags "--console $out/opt/onedev/conf/wrapper.conf"
+    echo "wrapper.java.additional.99=-DinstallDir=${installDir}" >> $out/conf/wrapper.conf   
 
     runHook postInstall
   '';

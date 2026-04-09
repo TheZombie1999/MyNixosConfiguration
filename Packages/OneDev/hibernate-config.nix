@@ -1,6 +1,6 @@
 { writeTextDir, installDir ? "/opt/onedev/", ... }:
 
-writeTextDir "${installDir}/conf/hibernate.properties" ''
+writeTextDir "conf/hibernate.properties" ''
   #----------------------------------------------------------------------------------
   # To use embedded HSQLDB database shipped with OneDev, please uncomment HSQLDB 
   # database settings below and comment out settings for other databases

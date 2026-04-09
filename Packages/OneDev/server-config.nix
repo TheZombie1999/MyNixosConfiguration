@@ -1,12 +1,11 @@
 {
   writeTextDir,
-  installDir ? "/opt/onedev",
   http_host ? "0.0.0.0",
   http_port ? "6610",
   ssh_port ? "6611",
   ...
 }:
-writeTextDir "${installDir}/conf/server.properties" ''
+writeTextDir "conf/server.properties" ''
   # Specify bind address for http service, use 0.0.0.0 to listen on all interfaces. 
   # Note that 127.0.0.1 will always be bound as OneDev needs to access localhost for 
   # some internal operations.
