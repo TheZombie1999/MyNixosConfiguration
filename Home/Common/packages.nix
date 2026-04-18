@@ -20,7 +20,6 @@
     meh # Super Light wait image viewer
     nil
     nixfmt
-    nodePackages.bash-language-server # Bash Autocompletion
     shfmt
     sttr # Easy String manipulation cli tool
     tree-sitter
@@ -30,5 +29,8 @@
     brave
     rofi
     unar
+    usbutils
+    yubikey-manager
+    yubico-pam
   ];
 }
