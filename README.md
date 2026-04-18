@@ -38,7 +38,7 @@ A Collection Of my nixos maschines and their configuration.
 * Homer
 * Nixos (Test VM's does do anything yet)
 
-# Ip Addresses
+# IP Addresses
 ## DHCP 
 
 The DHCP Range is from 200 to 254.
