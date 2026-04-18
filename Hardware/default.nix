@@ -1,4 +1,4 @@
 { ... }:
 {
-  import = if true then [] else [];
+  import = if true then [ ] else [ ];
 }

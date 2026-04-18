@@ -4,10 +4,12 @@
 
 {
   config,
+  onedev,
   pkgs,
   home-manager,
   nix-colors,
   inputs,
+  pkgs-stable,
   ...
 }:
 
@@ -15,7 +17,8 @@
   imports = [
     # Include the results of the hardware scan.
     ./../Hardware/moab-hardware-configuration.nix
-    ./../Packages/OneDev/onedev-module.nix
+    # ./../Packages/OneDev/onedev-module.nix
+    inputs.onedev.nixosModules.onedev
     inputs.sops-nix.nixosModules.sops
     home-manager.nixosModules.home-manager
   ];
@@ -203,6 +206,8 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    age-plugin-yubikey
+    age-plugin-1p
     atlauncher
     prismlauncher
     helix
@@ -219,6 +224,8 @@
   programs._1password.enable = true;
   programs._1password-gui.enable = true;
   programs._1password-gui.polkitPolicyOwners = [ "tim" ];
+
+  # programs._1password-gui.package = pkgs-stable._1password-gui;
   services.pcscd.enable = true;
   security.polkit.debug = true;
 

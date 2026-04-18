@@ -20,7 +20,7 @@
     meh # Super Light wait image viewer
     moreutils
     nil
-    nixfmt-rfc-style
+    nixfmt
     shfmt
     sttr # Easy String manipulation cli tool
     tree-sitter
@@ -30,5 +30,8 @@
     brave
     rofi
     unar
+    usbutils
+    yubikey-manager
+    yubico-pam
   ];
 }
