@@ -23,7 +23,7 @@ A Collection Of my nixos maschines and their configuration.
 
 * Brother Drucker
 
-# Hardware Currentyl not in use that could be reinstated.
+# Hardware Currently not in use that could be reinstated.
 
 * Raspberry Pi
 * Hvb Dev Board
