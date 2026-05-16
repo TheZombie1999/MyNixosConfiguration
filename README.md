@@ -53,5 +53,6 @@ Devices using dhcp are:
 * 192.168.178.100 Proxmox
 * 192.168.178.44 PiHole
 * 192.168.178.101 Onedev
+* 192.168.178.103 Onedev-nixos
 
 
