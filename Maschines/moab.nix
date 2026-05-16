@@ -4,7 +4,7 @@
 
 {
   config,
-  onedev,
+  lib,
   pkgs,
   home-manager,
   nix-colors,
@@ -15,27 +15,25 @@
 
 {
   imports = [
-    # Include the results of the hardware scan.
     ./../Hardware/moab-hardware-configuration.nix
-    # ./../Packages/OneDev/onedev-module.nix
     inputs.onedev.nixosModules.onedev
     inputs.sops-nix.nixosModules.sops
     home-manager.nixosModules.home-manager
   ];
 
-  boot.kernelParams = [ "split_lock_detect=off" ];
+  # boot.kernelParams = [ "split_lock_detect=off" ];
 
   nix.extraOptions = ''
     trusted-users = root tim
   '';
 
   #fileSystems."/mnt" = {
-    #device = "/dev/sda3";
-    #fsType = "ntfs-3g";
-    #options = [
-      #"rw"
-      #"uid=1000"
-    #];
+  #device = "/dev/sda3";
+  #fsType = "ntfs-3g";
+  #options = [
+  #"rw"
+  #"uid=1000"
+  #];
   #};
   #
   services.onedev.enable = true;
@@ -54,16 +52,20 @@
     "flakes"
   ];
 
-  # system.autoPull =
-  #   let
-  #     rebuild-nixos-vars = (import ./../Modules/yamlToSet.nix) pkgs ./../Ansible/rebuild-nixos-vars.yml;
-  #   in
-  #   {
-  #     enable = true;
-  #     sshKey = config.sops.secrets."autoPullPrivateKey".path;
-  #     repo = "git@github.com:TheZombie1999/MyNixosConfiguration.git";
-  #     dest = rebuild-nixos-vars.location;
-  #   };
+  services.nginx.enable = true;
+  services.nginx.virtualHosts."myhost.org" = {
+    root = "/var/www/myhost.org";
+    locations."/" = {
+      # This injects the autoindex directive directly into the Nginx config
+      extraConfig = ''
+        autoindex on;
+
+        # Optional but highly recommended formatting tweaks:
+        autoindex_exact_size off; # Shows file sizes in KB/MB instead of exact bytes
+        autoindex_localtime on;   # Uses your server's local time zone for file dates
+      '';
+    };
+  };
 
   programs.steam = {
     enable = true;
@@ -80,11 +82,6 @@
   boot.supportedFilesystems = [ "ntfs" ];
 
   networking.hostName = "moab"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   hardware = {
     graphics = {
@@ -114,8 +111,25 @@
     LC_TIME = "de_DE.UTF-8";
   };
 
-  # Enable the X11 windowing system.
+  # # Enable the X11 windowing system.
   services.xserver.enable = true;
+
+  programs.gamemode.enable = true;
+
+  # Optional: extra nice settings
+  programs.gamemode.settings = {
+    general = {
+      renice = 10; # Give game higher priority
+      softrealtime = "auto";
+      inhibit_screensaver = 1;
+    };
+  };
+
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "tim" ];
+  virtualisation.virtualbox.host.enableExtensionPack = true;
+  virtualisation.virtualbox.guest.enable = true;
+  virtualisation.virtualbox.guest.dragAndDrop = true;
 
   # Enable the GNOME Desktop Environment.
   # services.xserver.displayManager.gdm.enable = true;
@@ -135,12 +149,6 @@
   services.xserver.windowManager.i3.enable = true;
   programs.hyprland.enable = true;
   programs.niri.enable = true;
-
-  services = {
-    # desktopManager.plasma6.enable = true;
-    # displayManager.sddm.enable = true;
-    # displayManager.sddm.wayland.enable = true;
-  };
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
@@ -170,16 +178,7 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.tim = {
@@ -193,9 +192,6 @@
     ];
   };
 
-  # home-manager.users.tim = import ./../Home/Users/tim-moab-home.nix;
-  # home-manager.extraSpecialArgs = { inherit nix-colors; };
-
   # Install firefox.
   programs.firefox.enable = true;
 
@@ -206,6 +202,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    mangohud
     age-plugin-yubikey
     age-plugin-1p
     atlauncher
@@ -219,6 +216,7 @@
     sddm-sugar-dark
     sddm-astronaut
     bubblewrap
+    inputs.sheets.packages.x86_64-linux.default
   ];
 
   programs._1password.enable = true;
@@ -281,6 +279,13 @@
      ENV{ID_VENDOR_ID}=="1050",\
      ENV{ID_VENDOR}=="Yubico",\
      RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
+  '';
+
+  system.activationScripts.a.text = ''
+    PATH=$PATH:${lib.makeBinPath [ pkgs.age-plugin-yubikey ]}
+    ${pkgs.runtimeShell} -c "mkdir -p /var/lib/pcsc && ln -sfn ${pkgs.ccid}/pcsc/drivers /var/lib/pcsc/drivers"
+    ${pkgs.toybox}/bin/pgrep pcscd > /dev/null && ${pkgs.toybox}/bin/pkill pcscd
+    ${pkgs.pcsclite}/bin/pcscd
   '';
 
   programs.nix-ld.enable = true;

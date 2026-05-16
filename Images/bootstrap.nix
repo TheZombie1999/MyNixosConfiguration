@@ -1,24 +1,9 @@
 {
-  config,
   pkgs,
-  lib,
-  modulesPath,
   ...
 }:
 
 {
-  # Base imports for VM/ISO compatibility (qemu-guest for Proxmox VMs; nixos-generators will handle ISO-specific modules)
-  imports = [
-    # (modulesPath + "/profiles/qemu-guest.nix")
-    # (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
-  ];
-
-  # Networking: Static IP (customize IP, gateway, interface, and nameservers as needed for your network)
-  # Common Proxmox VM interface names: ens18, enp1s0, or eth0 (check with `ip link` after boot)
-  # networking = {
-  #   hostName = "bootstrap";
-  #   useDHCP = true; # Disabled because we want static IP
-  # };
 
   # SSH: Enabled, passwordless (key-only) authentication, no root login
   services.openssh = {
@@ -42,15 +27,13 @@
       "audio"
     ];
     openssh.authorizedKeys.keys = [
-      # ← ADD YOUR PUBLIC SSH KEY HERE (e.g. "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... your-key")
-      # Generate one with: ssh-keygen -t ed25519 -C "tim@nixos"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFSQmujNkQVQHO1+T0BYABedfEn2QFRJIL9ePe0nxTBF tim@nixos"
     ];
   };
 
   # No passwords anywhere (rely on SSH keys)
   security.sudo.wheelNeedsPassword = false;
   users.users.root.openssh.authorizedKeys.keys = [ ]; # Root has no keys (disabled anyway)
-
 
   # Wide range of utilities for disk formatting, system management, and info gathering
   environment.systemPackages = with pkgs; [
@@ -71,7 +54,6 @@
     nmon
     kitty
     chromium
-    
 
     # Disk formatting & partitioning
     parted

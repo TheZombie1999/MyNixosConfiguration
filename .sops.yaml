@@ -2,8 +2,10 @@
 
 keys:
   - &primary age18tp4m78u72cmcm5n75k7xek49yc9ay2786r5ckslytya7rn3d9tq50tfgz
+  - &yubikey age1yubikey1qw563wp9nyvkvu5e5vkyysq7wkyzfttk8h3kvltcwn33sj9yxk6kuppwr93
 creation_rules:
   - path_regex: Secrets/secrets\.yaml$
     key_groups:
     - age:
       - *primary
+      - *yubikey
