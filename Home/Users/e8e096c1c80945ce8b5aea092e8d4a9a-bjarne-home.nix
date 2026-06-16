@@ -26,23 +26,18 @@ in
     #   sudo mount -t cifs //10.0.215.28/share /mnt/servicebot -o credentials=/home/bjarne/.config/Servicebot/credentials -o uid=1000 -o gid=1000 &
     # fi
 
-    # if ! ssh-add -l | rg -q bjarne@bjarne-sdk ; then 
+    # if ! ssh-add -l | rg -q bjarne@bjarne-sdk ; then
     #   ssh-add ~/Github/MyNixosConfiguration/Home/Keys/bjarne-bjarne-sdk
     # fi
 
-    if ! mountpoint -q /home/bjarne/Documents; then 
+    if ! mountpoint -q /home/bjarne/Documents; then
       mkdir -p /home/bjarne/Documents
       sudo mount -t vboxsf -o rw,uid=1000,gid=1000 doc /home/bjarne/Documents
-    fi 
+    fi
 
     export LANG=de_DE.UTF-8
 
     PATH="$PATH:/snap/bin"
-
-    export PYENV_ROOT="$HOME/.pyenv"
-    [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-    eval "$(pyenv init - bash)"
-    eval "$(pyenv virtualenv-init -)"
   '';
 
   home.homeDirectory = "/home/bjarne";
