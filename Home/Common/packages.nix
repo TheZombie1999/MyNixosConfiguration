@@ -20,10 +20,8 @@
     lnav # Logfile navigator
     meh # Super Light wait image viewer
     moreutils
-    neofetch
     nil
     nixfmt-rfc-style
-    nodePackages.bash-language-server # Bash Autocompletion
     shfmt
     sttr # Easy String manipulation cli tool
     tree
