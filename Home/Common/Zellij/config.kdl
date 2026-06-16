@@ -264,8 +264,8 @@ pane_frames false
 // otherwise this will error if such a session exists.
 // Default: <RANDOM>
 // 
-session_name "My singleton session"
-attach_to_session true
+// session_name "My singleton session"
+// attach_to_session true
  
 // When `session_name` is provided, attaches to that session
 // if it is already running or creates it otherwise.

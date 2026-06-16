@@ -5,21 +5,20 @@ sort_by="natural"
 show_hidden=true
 # linemode = "size_and_mtime"
 
-[[plugin.prepend_fetchers]]
-id   = "git"
-name = "*"
-run  = "git"
+# [[plugin.prepend_fetchers]]
+# group   = "git"
+# url = "*"
+# run  = "git"
 
-[[plugin.prepend_fetchers]]
-id   = "git"
-name = "*/"
-run  = "git"
+# [[plugin.prepend_fetchers]]
+# group = "git"
+# url = "*/"
+# run  = "git"
 
-[opener]
-zellij = [
-  { run = "zellij action move-focus right; zellij action move-focus up ; zellij edit %s", orphan = true, block = false },
-
-]
+# [opener]
+# zellij = [
+#   { run = "zellij action move-focus right; zellij action move-focus up ; zellij edit %s", orphan = true, block = false },
+# ]
 
 [open]
 prepend_rules = [
