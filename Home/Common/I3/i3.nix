@@ -82,11 +82,5 @@
         };
       };
     };
-
-    services.random-background = {
-      enable = true;
-      imageDirectory = if config.DarkMode then "%h/Backgrounds/Dark" else "%h/Backgrounds/Light";
-      interval = "10min";
-    };
   };
 }

@@ -12,5 +12,6 @@
     ./Ov/ov.nix
     ./Alacritty
     ./Zellij
+    ./Yazi
   ];
 }

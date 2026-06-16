@@ -11,7 +11,6 @@
     bats # Bash Unit testing
     chromium
     csvtool
-    duf # Disk Usage
     entr # Run Command on file change
     eza # Better ls
     imagemagickBig
@@ -24,7 +23,6 @@
     nixfmt-rfc-style
     shfmt
     sttr # Easy String manipulation cli tool
-    tree
     tree-sitter
     yamlfmt
     yaml-language-server

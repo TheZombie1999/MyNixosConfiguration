@@ -1,0 +1,9 @@
+{
+  "model": "grok-code-fast-1",
+  "mcpServers": {
+    "nixos": {
+      "command": "uvx",
+      "args": ["mcp-nixos"]
+    }
+  }
+}

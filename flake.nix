@@ -8,17 +8,24 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nix-colors.url = "github:misterio77/nix-colors";
+    deploy-rs.url = "github:serokell/deploy-rs";
   };
 
   outputs =
     {
+      self,
       nixpkgs,
       home-manager,
       nix-colors,
+      deploy-rs,
       ...
     }@inputs:
     {
       nixosConfigurations = {
+        "bootstrap" = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [ ./Images/bootstrap.nix ];
+        };
         "microstar" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
@@ -64,5 +71,15 @@
           ];
         };
       };
+
+      deploy.nodes.some-random-system = {
+          hostname = "some-random-system";
+          profiles.system = {
+            user = "root";
+            path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.some-random-system;
+          };
+      };
+
+      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
     };
 }

@@ -4,6 +4,11 @@ keybinds clear-defaults=true {
         bind "esc" { SwitchToMode "normal"; }
     }
     normal {
+        bind "Ctrl b" {
+            Run "bundle" {
+                close_on_exit true
+            }
+        }
         bind "Ctrl t" { SwitchToMode "tab"; };
         bind "Ctrl w" { SwitchToMode "pane"; };
         bind "Alt m" { SwitchToMode "move"; };
@@ -11,8 +16,18 @@ keybinds clear-defaults=true {
         bind "Ctrl o" { LaunchOrFocusPlugin "session-manager" {
                 floating true
                 move_to_focused_tab true
+                close_on_exit true
             }
         }
+
+        bind "Ctrl y" {
+            LaunchOrFocusPlugin "file:~/.config/zellij/plugins/zellij-workspace.wasm" {
+                floating true
+            
+                replace_current_session true // default false: replace current session with selected layout
+                debug false                     // display debug info, config, parse command etc
+        }
+    }
     }
 
     shared_except "locked" "session" {
@@ -25,7 +40,13 @@ keybinds clear-defaults=true {
         bind "h" { GoToPreviousTab; }
         bind "l" { GoToNextTab; }
         bind "r" { SwitchToMode "renametab"; TabNameInput 0; }
-
+        bind "s" {
+            Run "selectLayout" {
+                floating true
+                close_on_exit true
+            }
+            SwitchToMode "normal";
+        }
     }
     pane {
         // Rename 
@@ -43,10 +64,10 @@ keybinds clear-defaults=true {
 
         // Move
         bind "p" { SwitchFocus; }
-        bind "h" { MoveFocus "left"; }
+        bind "h" { MoveFocusOrTab "left"; }
         bind "j" { MoveFocus "down"; }
         bind "k" { MoveFocus "up"; }
-        bind "l" { MoveFocus "right"; }
+        bind "l" { MoveFocusOrTab "right"; }
 
         // Close
         bind "q" { CloseFocus; }
@@ -56,7 +77,6 @@ keybinds clear-defaults=true {
         bind "Ctrl u" { HalfPageScrollUp; }
 
         bind "p" { DumpScreen "/tmp/my-dump.txt"; }
-
     }
 
     renametab {
@@ -244,7 +264,8 @@ pane_frames false
 // otherwise this will error if such a session exists.
 // Default: <RANDOM>
 // 
-// session_name "My singleton session"
+session_name "My singleton session"
+attach_to_session true
  
 // When `session_name` is provided, attaches to that session
 // if it is already running or creates it otherwise.

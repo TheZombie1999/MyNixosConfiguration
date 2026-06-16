@@ -1,0 +1,52 @@
+layout {
+    default_tab_template {
+        // the default zellij tab-bar and status bar plugins
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+    tab {
+        pane {
+            command "bash"
+            args "-i" "-c" "yy"
+        }
+    }
+    swap_tiled_layout name="Test" {
+        tab max_panes=2 {
+            pane split_direction="vertical" {
+                pane {
+                    command "bash"
+                    args "-i" "-c" "yy"
+                }
+                children
+                pane
+            }
+        }
+        tab min_panes=3 {
+            pane split_direction="vertical" {
+                pane {
+                    command "bash"
+                    args "-i" "-c" "yy"
+                    size "20%"
+                }
+                pane stacked=true {
+                    children
+                }
+            }
+        }
+    }
+}
+
+keybinds {
+    pane {
+        // Create New Pane
+        bind "a" { NewPane ; SwitchToMode "normal"; }
+        bind "s" { NewPane ; SwitchToMode "normal"; }
+        bind "d" { NewPane ; SwitchToMode "normal"; }
+        bind "f" { NewPane ; SwitchToMode "normal"; }
+    }
+}

@@ -1,5 +1,10 @@
-{ ...}:
+{ pkgs, ...}:
 {
+
+  home.packages = [
+    (pkgs.writeShellScriptBin "bundle" (builtins.readFile ./launch.sh) )
+  ];
+
   programs.zellij = {
     enable = true;
   };
@@ -12,6 +17,11 @@
   xdg.configFile."plugins" = {
       source = ./plugins;
       target = "zellij/plugins";
+      recursive = true;
+  };
+  xdg.configFile."layouts" = {
+      source = ./layouts;
+      target = "zellij/layouts";
       recursive = true;
   };
 }
