@@ -38,6 +38,10 @@
   #
   services.onedev.enable = true;
 
+  services.desktopManager.plasma6.enable = true;
+  programs.seahorse.enable = false;
+
+
   home-manager.users.tim = import ./../Home/Users/tim-moab-home.nix;
   home-manager.extraSpecialArgs = { inherit nix-colors; };
 
@@ -217,6 +221,24 @@
     sddm-astronaut
     bubblewrap
     inputs.sheets.packages.x86_64-linux.default
+
+    # KDE Utilities
+    kdePackages.kcalc # Calculator
+    kdePackages.kcharselect # Character map
+    kdePackages.kclock # Clock app
+    kdePackages.kcolorchooser # Color picker
+    kdePackages.kolourpaint # Simple paint program
+    kdePackages.ksystemlog # System log viewer
+    kdePackages.sddm-kcm # SDDM configuration module
+    kdiff3 # File/directory comparison tool
+
+    # Hardware/System Utilities (Optional)
+    kdePackages.isoimagewriter # Write hybrid ISOs to USB
+    kdePackages.partitionmanager # Disk and partition management
+    hardinfo2 # System benchmarks and hardware info
+    wayland-utils # Wayland diagnostic tools
+    wl-clipboard # Wayland copy/paste support
+    vlc # Media player
   ];
 
   programs._1password.enable = true;

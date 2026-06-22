@@ -1,6 +1,7 @@
 { pkgs, ... }:
 
 {
+  nixpkgs.config.allowUnfree = true;
   home.packages = with pkgs; [
     zellij
     tree
@@ -9,7 +10,7 @@
     aria2 # Better wget
     bat # Better cat
     bats # Bash Unit testing
-    chromium
+    (chromium.override { enableWideVine = true; })
     csvtool
     entr # Run Command on file change
     eza # Better ls
