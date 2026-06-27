@@ -25,6 +25,6 @@
 
   services.ssh-agent = {
     enable = true;
-    pkcs11Whitelist = [ "*" ];
+    pkcs11Whitelist = [ "/nix/store/*" ];
   };
 }
