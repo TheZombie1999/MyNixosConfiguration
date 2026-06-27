@@ -6,24 +6,40 @@ show_hidden=true
 # linemode = "size_and_mtime"
 
 [[plugin.prepend_fetchers]]
-id   = "git"
-name = "*"
-run  = "git"
+url   = "*"
+run   = "git"
+group = "git"
 
 [[plugin.prepend_fetchers]]
-id   = "git"
-name = "*/"
-run  = "git"
+url   = "*/"
+run   = "git"
+group = "git"
 
 [opener]
 zellij = [
-  { run = "zellij action move-focus right; zellij action move-focus up ; zellij edit %s", orphan = true, block = false },
-
+  { run = "yaziOpener %s", orphan = true, block = false },
 ]
+zathura = [
+  { run = "zathura %s", orphan = true, block = false },
+]
+nsxiv = [
+  { run = "nsxiv %s", orphan = true, block = false },
+]
+mpv = [
+  { run = "mpv %s", orphan = true, block = false },
+]
+
 
 [open]
 prepend_rules = [
 	{ mime = "text/*", use = "zellij" },
+  { mime = "inode/x-empty", use = "zellij" },
+	{ mime = "application/json", use = "zellij" },
+	{ mime = "application/ld+json", use = "zellij" },
+	{ mime = "application/x-sh", use = "zellij" },
+	{ mime = "application/pdf", use = "zathura" },
+	{ mime = "image/*", use = "nsxiv" },
+	{ mime = "video/*", use = "mpv" },
 ]
 
 
