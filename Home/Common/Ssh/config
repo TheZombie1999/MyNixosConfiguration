@@ -1,0 +1,21 @@
+
+Include ssh_configs.d/*
+
+Host *
+	Compression yes
+	ForwardX11 no
+	ForwardAgent yes
+	TCPKeepAlive yes
+	ServerAliveInterval 1
+	ServerAliveCountMax 1
+	ConnectTimeout 1m
+	StrictHostKeyChecking no
+	UserKnownHostsFile ~/.ssh/known_hosts
+	HashKnownHosts no
+	ControlMaster auto
+	ControlPath ~/.ssh/cm%r@%h:%p
+	ControlPersist yes
+	PreferredAuthentications publickey
+	LogLevel ERROR
+	
+

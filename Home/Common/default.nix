@@ -5,7 +5,7 @@
     ./bash.nix
     ./packages.nix
     ./helix.nix
-    ./ssh.nix
+    ./Ssh/ssh.nix
     ./gnupg.nix
     ./broot.nix
     ./bat.nix

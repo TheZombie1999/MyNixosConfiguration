@@ -1,0 +1,8 @@
+# onedev.local:22 SSH-2.0-OpenSSH_10.0p2 Debian-7
+onedev.local ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC0H37RCd3SVzsBaO5owN9mViZmu6jrOfP8gyNNor+N9AstZKR8yWjgReG4aiTUNi3+jOau33h228bcpxkHwozqHQNbubV0QpBwxC5CSvOrkp/dSKToAgQYc4l0DPOw2fRCfl1rK/rOW2Fege8ka6G9IW0tZaNbKTY6T6SntSrERBT4mJvtgB/lEenaLVmp3nXl9uw26k0fZc4k0uOXA97KjvUsSgJVCOBdfT5/fv78ZoQ0C8TzAdy7AbRZw/ae5+agN61/qJ5JLJwCvGieOYu1AEtPwDPxx/gcxettAf8RIJtBH8RgK3bjFexf7oTOTBnGm6S4Sn+4zre6wXz8t4tjIXzHyU9TdsLkM2qV6VnGv4G1ksgfIPH3VJ/V97zVb2ZOMigDiSWLhwQkUslCxqmppMEBIdvcsYhEvYBXMu/VKZmn2A55zDRRbA7rW58vRl6z4cuY3R54lpSPlcAaLuP0YQrXjGuJ40sbqqM5jT/GtMyH4Tbt97C+T0ClwWrv5Qs=
+# onedev.local:22 SSH-2.0-OpenSSH_10.0p2 Debian-7
+onedev.local ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJ1drvL3eEZABZTxex3XFDE+3hgJvMy+z20IixK10yIt9wH2FkP8zP2XOccNM/fBpdUP12N9sfn822qZ81lryyY=
+# onedev.local:22 SSH-2.0-OpenSSH_10.0p2 Debian-7
+onedev.local ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILARIgpG1Wz4+PQv7lVddIignxnx0q8s2wH0YDWsXKrF
+# onedev.local:22 SSH-2.0-OpenSSH_10.0p2 Debian-7
+# onedev.local:22 SSH-2.0-OpenSSH_10.0p2 Debian-7
