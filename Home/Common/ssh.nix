@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, ... }:
 
 {
   programs.ssh = {
@@ -23,5 +23,8 @@
     };
   };
 
-  services.ssh-agent.enable = true;
+  services.ssh-agent = {
+    enable = true;
+    pkcs11Whitelist = [ "*" ];
+  };
 }

@@ -34,5 +34,6 @@
     usbutils
     yubikey-manager
     yubico-pam
+    claude-code
   ];
 }

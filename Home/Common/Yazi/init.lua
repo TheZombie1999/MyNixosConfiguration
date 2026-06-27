@@ -1,6 +1,8 @@
 
 require("test2"):setup()
-require("git"):setup()
+require("git"):setup ({
+  order = 1500, 
+})
 require("auto-layout").setup({
    breakpoint_large = 90,  -- new large window threshold, defaults to 100
    breakpoint_medium = 60,  -- new medium window threshold, defaults to 50

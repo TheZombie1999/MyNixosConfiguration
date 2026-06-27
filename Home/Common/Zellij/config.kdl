@@ -4,11 +4,11 @@ keybinds clear-defaults=true {
         bind "esc" { SwitchToMode "normal"; }
     }
     normal {
-        bind "Ctrl b" {
-            Run "bundle" {
-                close_on_exit true
-            }
-        }
+        // bind "Ctrl v" {
+        //     Run "bundle" {
+        //         close_on_exit true
+        //     }
+        // }
         bind "Ctrl t" { SwitchToMode "tab"; };
         bind "Ctrl w" { SwitchToMode "pane"; };
         bind "Alt m" { SwitchToMode "move"; };
@@ -53,10 +53,9 @@ keybinds clear-defaults=true {
         bind "r" { SwitchToMode "renamepane"; PaneNameInput 0; }
 
         // Create New Pane
-        bind "a" { NewPane "left"; SwitchToMode "normal"; }
-        bind "s" { NewPane "up"; SwitchToMode "normal"; }
-        bind "d" { NewPane "down"; SwitchToMode "normal"; }
-        bind "f" { NewPane "right"; SwitchToMode "normal"; }
+        bind "d" { NewPane "Down"; SwitchToMode "normal"; }
+        bind "f" { NewPane "Right"; SwitchToMode "normal"; }
+        bind "n" { NewPane ; SwitchToMode "normal"; }
 
         // Focus
         bind "e" { TogglePaneEmbedOrFloating; SwitchToMode "normal"; }
@@ -77,6 +76,7 @@ keybinds clear-defaults=true {
         bind "Ctrl u" { HalfPageScrollUp; }
 
         bind "p" { DumpScreen "/tmp/my-dump.txt"; }
+        bind "o" { NextSwapLayout; }
     }
 
     renametab {
@@ -180,7 +180,7 @@ default_mode "normal"
 // The folder in which Zellij will look for layouts
 // (Requires restart)
 // 
-// layout_dir "/tmp"
+layout_dir "~/.config/zellij/layouts"
  
 // The folder in which Zellij will look for themes
 // (Requires restart)
@@ -201,7 +201,7 @@ mouse_mode false
 //   - true (default, enabled)
 //   - false
 // 
-pane_frames false
+pane_frames true
  
 // When attaching to an existing session with other users,
 // should the session be mirrored (true)
@@ -265,7 +265,7 @@ pane_frames false
 // Default: <RANDOM>
 // 
 // session_name "My singleton session"
-// attach_to_session true
+attach_to_session true
  
 // When `session_name` is provided, attaches to that session
 // if it is already running or creates it otherwise.

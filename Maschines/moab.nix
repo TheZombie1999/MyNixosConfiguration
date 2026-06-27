@@ -41,7 +41,6 @@
   services.desktopManager.plasma6.enable = true;
   programs.seahorse.enable = false;
 
-
   home-manager.users.tim = import ./../Home/Users/tim-moab-home.nix;
   home-manager.extraSpecialArgs = { inherit nix-colors; };
 
@@ -129,11 +128,14 @@
     };
   };
 
-  virtualisation.virtualbox.host.enable = true;
+  # virtualisation.virtualbox.host.enable = true;
   users.extraGroups.vboxusers.members = [ "tim" ];
-  virtualisation.virtualbox.host.enableExtensionPack = true;
-  virtualisation.virtualbox.guest.enable = true;
-  virtualisation.virtualbox.guest.dragAndDrop = true;
+  # virtualisation.virtualbox.host.enableExtensionPack = true;
+  # virtualisation.virtualbox.guest.enable = true;
+  # virtualisation.virtualbox.guest.dragAndDrop = true;
+
+  virtualisation.libvirtd.enable = true;
+  programs.virt-manager.enable = true;
 
   # Enable the GNOME Desktop Environment.
   # services.xserver.displayManager.gdm.enable = true;
@@ -193,8 +195,13 @@
       "wheel"
       "dialout"
       "onepassword-cli"
+      "plugdev"
+      "pcscd"
+      "libvirtd"
     ];
   };
+
+  users.groups.plugdev = {};
 
   # Install firefox.
   programs.firefox.enable = true;
@@ -239,7 +246,11 @@
     wayland-utils # Wayland diagnostic tools
     wl-clipboard # Wayland copy/paste support
     vlc # Media player
+
+    yubico-piv-tool
   ];
+
+  # services.yubikey-agent.enable = true;
 
   programs._1password.enable = true;
   programs._1password-gui.enable = true;
@@ -247,7 +258,11 @@
 
   # programs._1password-gui.package = pkgs-stable._1password-gui;
   services.pcscd.enable = true;
-  security.polkit.debug = true;
+  systemd.services.pcscd.serviceConfig = {
+    PIDFile = lib.mkForce "";
+    User = "root";
+  };
+  # security.polkit.debug = true;
 
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
@@ -294,6 +309,7 @@
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
+
   services.udev.extraRules = ''
     ACTION=="remove",\
      ENV{ID_BUS}=="usb",\
@@ -301,13 +317,29 @@
      ENV{ID_VENDOR_ID}=="1050",\
      ENV{ID_VENDOR}=="Yubico",\
      RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
+
+     ACTION=="add", SUBSYSTEM=="usb", ATTR{power/autosuspend}="-1"
+
+     SUBSYSTEM=="usb", ATTRS{idVendor}=="1050", GROUP="plugdev", MODE="0660"
+
+     KERNEL=="hidraw*", ATTRS{idVendor}=="04fe", TAG+="uaccess"
+     SUBSYSTEM=="hidraw", ATTRS{idVendor}=="04fe", MODE="0666"
+     SUBSYSTEM=="usb", ATTRS{idVendor}=="04fe", MODE="0666", GROUP="plugdev"
   '';
+
+  # Authorize the active session for PC/SC access via polkit
+  # security.polkit.extraConfig = ''
+  #   polkit.addRule(function(action, subject) {
+  #     if (action.id == "org.debian.pcsc-lite.access_pcsc" &&
+  #         subject.active == true && subject.local == true) {
+  #       return polkit.Result.YES;
+  #     }
+  #   });
+  # '';
 
   system.activationScripts.a.text = ''
     PATH=$PATH:${lib.makeBinPath [ pkgs.age-plugin-yubikey ]}
     ${pkgs.runtimeShell} -c "mkdir -p /var/lib/pcsc && ln -sfn ${pkgs.ccid}/pcsc/drivers /var/lib/pcsc/drivers"
-    ${pkgs.toybox}/bin/pgrep pcscd > /dev/null && ${pkgs.toybox}/bin/pkill pcscd
-    ${pkgs.pcsclite}/bin/pcscd
   '';
 
   programs.nix-ld.enable = true;

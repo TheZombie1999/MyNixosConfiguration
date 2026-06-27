@@ -1,5 +1,8 @@
-{ ... }:
+{ pkgs, ... }:
 {
+
+  home.packages = [ pkgs.mpv pkgs.nsxiv (pkgs.callPackage ./yaziOpener.nix { }) ];
+
   programs.yazi = {
     enable = true;
     enableBashIntegration = true;
@@ -22,5 +25,14 @@
     source = ./plugins;
     target = ".config/yazi/plugins";
     recursive = true;
+  };
+
+  programs.zathura = {
+    enable = true;
+    options = {
+      recolor = true; # dark mode
+      recolor-darkcolor = "#FFFFFF";
+      recolor-lightcolor = "#1E1E1E";
+    };
   };
 }

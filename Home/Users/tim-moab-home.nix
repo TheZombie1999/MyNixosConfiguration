@@ -1,12 +1,12 @@
 { config, pkgs, nix-colors, ... }:
 
 {
-  imports = [  
+  imports = [
     nix-colors.homeManagerModules.default
     ../Common
   ];
 
-  colorScheme = nix-colors.colorSchemes.gruvbox-dark-hard; 
+  colorScheme = nix-colors.colorSchemes.gruvbox-dark-hard;
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -78,6 +78,9 @@
   home.sessionVariables = {
     EDITOR = "hx";
   };
+
+  services.ssh-agent.enable = true;
+
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
