@@ -4,6 +4,8 @@
   # List of langue servers required by helix
   home.packages = with pkgs; [
     nixd
+    nixfmt-rfc-style
+    prettier
     black
     shellcheck
     ruff
@@ -146,6 +148,22 @@
           "error" = red;
         };
     };
+  };
+
+  programs.helix.languages = {
+    language = [
+      {
+        name = "json";
+        formatter = {
+          command = "prettier";
+          args = [ "--parser" "json" ];
+        };
+      }
+      {
+        name = "nix";
+        formatter = { command = "nixfmt"; };
+      }
+    ];
   };
 
   xdg.configFile."helix/config.toml".onChange = "${pkgs.busybox}/bin/pkill -USR1 hx";

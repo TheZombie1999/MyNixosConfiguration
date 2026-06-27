@@ -13,5 +13,6 @@
     ./Alacritty
     ./Zellij
     ./Yazi
+    ./Claude
   ];
 }
