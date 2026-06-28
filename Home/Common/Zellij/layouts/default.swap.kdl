@@ -1,0 +1,50 @@
+tab_template name="ui" {
+   pane size=1 borderless=true {
+       plugin location="tab-bar"
+   }
+   children
+   pane size=1 borderless=true {
+       plugin location="status-bar"
+   }
+}
+
+swap_tiled_layout name="vertical" {
+    ui {
+        pane split_direction="vertical" {
+            pane split_direction="horizontal" size="33%" { pane; }
+            pane split_direction="horizontal" size="33%" { children; }
+            pane split_direction="horizontal" size="33%" { pane; }
+        }
+    }
+}
+
+swap_tiled_layout name="horizontal" {
+    ui max_panes=4 {
+        pane
+        pane
+    }
+    ui max_panes=8 {
+        pane {
+            pane split_direction="vertical" { children; }
+            pane split_direction="vertical" { pane; pane; pane; pane; }
+        }
+    }
+    ui max_panes=12 {
+        pane {
+            pane split_direction="vertical" { children; }
+            pane split_direction="vertical" { pane; pane; pane; pane; }
+            pane split_direction="vertical" { pane; pane; pane; pane; }
+        }
+    }
+}
+
+swap_tiled_layout name="stacked" {
+    ui min_panes=5 {
+        pane split_direction="vertical" {
+            pane
+            pane stacked=true { children; }
+        }
+    }
+}
+
+

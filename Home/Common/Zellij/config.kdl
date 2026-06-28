@@ -4,11 +4,11 @@ keybinds clear-defaults=true {
         bind "esc" { SwitchToMode "normal"; }
     }
     normal {
-        // bind "Ctrl v" {
-        //     Run "bundle" {
-        //         close_on_exit true
-        //     }
-        // }
+        bind "Ctrl v" {
+            Run "group" {
+                close_on_exit true
+            }
+        }
         bind "Ctrl t" { SwitchToMode "tab"; };
         bind "Ctrl w" { SwitchToMode "pane"; };
         bind "Alt m" { SwitchToMode "move"; };
@@ -77,6 +77,10 @@ keybinds clear-defaults=true {
 
         bind "p" { DumpScreen "/tmp/my-dump.txt"; }
         bind "o" { NextSwapLayout; }
+
+        bind "y" {
+            Run "yazi"; SwitchToMode "normal"
+        }
     }
 
     renametab {
@@ -110,6 +114,9 @@ keybinds clear-defaults=true {
 
         bind "+" { Resize "Increase"; }
         bind "-" { Resize "Decrease"; }
+
+        bind "b" { BreakPane; }
+        bind "B" { BreakPaneLeft; }
     }
 
     renamepane {

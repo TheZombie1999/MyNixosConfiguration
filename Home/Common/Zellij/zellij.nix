@@ -1,8 +1,9 @@
-{ pkgs, ...}:
+{ pkgs, ... }:
 {
 
   home.packages = [
-    (pkgs.writeShellScriptBin "bundle" (builtins.readFile ./launch.sh) )
+    (pkgs.writeShellScriptBin "group" (builtins.readFile ./group.sh))
+    (pkgs.writeScriptBin "selectlayout" (builtins.readFile ./selectLayout.sh))
   ];
 
   programs.zellij = {
@@ -15,13 +16,13 @@
   };
 
   xdg.configFile."plugins" = {
-      source = ./plugins;
-      target = "zellij/plugins";
-      recursive = true;
+    source = ./plugins;
+    target = "zellij/plugins";
+    recursive = true;
   };
   xdg.configFile."layouts" = {
-      source = ./layouts;
-      target = "zellij/layouts";
-      recursive = true;
+    source = ./layouts;
+    target = "zellij/layouts";
+    recursive = true;
   };
 }
