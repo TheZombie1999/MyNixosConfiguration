@@ -201,7 +201,7 @@
     ];
   };
 
-  users.groups.plugdev = {};
+  users.groups.plugdev = { };
 
   # Install firefox.
   programs.firefox.enable = true;
@@ -309,6 +309,20 @@
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
+
+  services.openssh = {
+    enable = true;
+    ports = [ 22 ];
+    settings = {
+      PasswordAuthentication = true;
+      PermitRootLogin = "no";
+      X11Forwarding = false;
+    };
+  };
+
+  networking.firewall = {
+    allowedTCPPorts = [ 22 ];
+  };
 
   services.udev.extraRules = ''
     ACTION=="remove",\
