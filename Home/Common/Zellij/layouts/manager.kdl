@@ -1,0 +1,64 @@
+
+layout {
+
+	tab_template name="ui" {
+	   pane size=1 borderless=true {
+	       plugin location="tab-bar"
+	   }
+	   children
+	   pane size=1 borderless=true {
+	       plugin location="status-bar"
+	   }
+	}
+
+    pane_template name="filemanager" {
+    	pane {
+    		command "yazi"
+    		name "FILEMANAGER"
+    	}
+    }
+
+    pane_template name="terminal" {
+    	pane {
+    		name "TERMINAL"
+    	}
+    }
+
+
+	ui {
+		pane split_direction="vertical" {
+			filemanager
+			terminal
+		}
+	}
+
+	new_tab_template {
+		
+	} 
+
+	swap_tiled_layout name="FILEMANAGER" {
+		ui {
+	        pane split_direction="vertical" {
+	            filemanager size="25%"
+	            pane size="75%" stacked=true { children; }
+	            terminal
+        	}
+        }
+	}
+
+	swap_tiled_layout name="SPLIT" {
+		ui {
+	        pane split_direction="vertical" {
+	            filemanager size="50%"
+	            pane split_direction="horizontal" {
+		            pane size="70%" stacked=true { children; }
+	            	terminal
+	            }
+        	}
+        }
+	}
+
+}
+
+
+
