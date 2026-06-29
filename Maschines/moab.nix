@@ -267,6 +267,15 @@
   };
   # security.polkit.debug = true;
 
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      if (action.id == "net.reactivated.pcsclite.access_pcsc" &&
+          subject.isInGroup("pcscd")) {
+        return polkit.Result.YES;
+      }
+    });
+  '';
+
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
   security.pam.yubico = {
