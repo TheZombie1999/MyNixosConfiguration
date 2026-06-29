@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "nixos": {
+      "type": "stdio",
+      "command": "mcp-nixos",
+      "args": [],
+      "env": {}
+    },
+    "git": {
+      "type": "stdio",
+      "command": "mcp-server-git",
+      "args": [],
+      "env": {}
+    }
+  }
+}

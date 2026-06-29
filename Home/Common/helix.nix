@@ -156,12 +156,17 @@
         name = "json";
         formatter = {
           command = "prettier";
-          args = [ "--parser" "json" ];
+          args = [
+            "--parser"
+            "json"
+          ];
         };
       }
       {
         name = "nix";
-        formatter = { command = "nixfmt"; };
+        formatter = {
+          command = "nixfmt";
+        };
       }
     ];
   };

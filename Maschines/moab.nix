@@ -43,6 +43,9 @@
 
   home-manager.users.tim = import ./../Home/Users/tim-moab-home.nix;
   home-manager.extraSpecialArgs = { inherit nix-colors; };
+  home-manager.backupFileExtension = "backup";
+
+  services.yubikey-agent.enable = true;
 
   sops.defaultSopsFile = ../Secrets/secrets.yaml;
   sops.defaultSopsFormat = "yaml";
@@ -268,34 +271,34 @@
 
   security.pam.yubico = {
     enable = true;
-    debug = true;
+    debug = false;
     mode = "challenge-response";
     id = [ "13336795" ];
   };
 
   security.pam.services = {
     login.u2fAuth = true;
-    login.unixAuth = false;
+    login.unixAuth = true;
     sudo.u2fAuth = true;
-    sudo.unixAuth = false;
+    sudo.unixAuth = true;
     i3lock.unixAuth = false;
   };
 
   programs.corectrl.enable = true;
 
-  programs.xss-lock =
-    let
-      background = pkgs.callPackage ./../Home/Backgrounds/package.nix { };
-    in
-    {
-      enable = true;
-      lockerCommand = "${pkgs.i3lock}/bin/i3lock --image=${background}/image.png --show-failed-attempts";
-    };
+  # programs.xss-lock =
+  #   let
+  #     background = pkgs.callPackage ./../Home/Backgrounds/package.nix { };
+  #   in
+  #   {
+  #     enable = true;
+  #     lockerCommand = "${pkgs.i3lock}/bin/i3lock --image=${background}/image.png --show-failed-attempts";
+  #   };
 
-  programs.i3lock = {
-    enable = true;
-    u2fSupport = true;
-  };
+  # programs.i3lock = {
+  #   enable = true;
+  #   u2fSupport = true;
+  # };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

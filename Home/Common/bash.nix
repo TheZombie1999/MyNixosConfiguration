@@ -38,8 +38,11 @@
 
       export EDITOR=hx
       export LANG=C.UTF-8
+      export NIXPKGS_ALLOW_UNFREE=1
 
-      eval "$(zellij setup --generate-auto-start bash)"
+      if [ -z "$SSH_CLIENT" ] && [ -z "$SSH_TTY" ]; then
+          eval "$(zellij setup --generate-auto-start bash)"
+      fi
     '';
     shellAliases = {
       ls = "eza --group-directories-first -I \"jre|snap|Music|CLionProjects|Desktop\"";
