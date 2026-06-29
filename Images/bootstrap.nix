@@ -27,7 +27,7 @@
       "audio"
     ];
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFSQmujNkQVQHO1+T0BYABedfEn2QFRJIL9ePe0nxTBF tim@nixos"
+      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIK5ynhdh9jUSrKGll4ZOw4Krji+ipGNfsFKu6EmbEpVMAAAABHNzaDo= ssh: "
     ];
   };
 
@@ -53,7 +53,6 @@
     ncdu
     nmon
     kitty
-    chromium
 
     # Disk formatting & partitioning
     parted
