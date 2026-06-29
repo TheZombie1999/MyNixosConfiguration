@@ -24,7 +24,7 @@
     nixfmt
     moreutils
     nil
-    nixfmt-rfc-style
+    nixfmt-rs
     shfmt
     sttr # Easy String manipulation cli tool
     tree-sitter
