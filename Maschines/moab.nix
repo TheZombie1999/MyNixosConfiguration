@@ -269,7 +269,8 @@
 
   security.polkit.extraConfig = ''
     polkit.addRule(function(action, subject) {
-      if (action.id == "net.reactivated.pcsclite.access_pcsc" &&
+      if ((action.id == "org.debian.pcsc-lite.access_pcsc" ||
+           action.id == "org.debian.pcsc-lite.access_card") &&
           subject.isInGroup("pcscd")) {
         return polkit.Result.YES;
       }
