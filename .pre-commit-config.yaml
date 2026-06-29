@@ -1,0 +1,31 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+
+  - repo: local
+    hooks:
+      - id: nixfmt
+        name: nixfmt
+        entry: nixfmt
+        language: system
+        files: \.nix$
+
+      # - id: statix
+      #   name: statix
+      #   entry: statix check
+      #   language: system
+      #   files: \.nix$
+      #   pass_filenames: false
+
+      # - id: deadnix
+      #   name: deadnix
+      #   entry: deadnix --fail
+      #   language: system
+      #   files: \.nix$

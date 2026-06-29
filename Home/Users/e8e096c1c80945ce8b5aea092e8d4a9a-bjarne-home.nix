@@ -18,8 +18,6 @@ in
 
   colorScheme = nix-colors.colorSchemes.gruvbox-dark-hard;
 
-  home.username = "bjarne";
-
   programs.bash.initExtra = ''
     # if ! mountpoint -q /mnt/servicebot ; then
     #   sudo mkdir -p /mnt/servicebot
@@ -40,29 +38,31 @@ in
     PATH="$PATH:/snap/bin"
   '';
 
-  home.homeDirectory = "/home/bjarne";
+  home = {
+    username = "bjarne";
+    homeDirectory = "/home/bjarne";
+    packages = with pkgs; [
+      cifs-utils
+      ncdu # A Amazing tool to find Large Files that you want to delete
+      htop-vim # htop with vim bindings
+      hishtory # A tool for a better bash history
+      eza
+      nil # A Lanuage Server
+      glab
+      # ranger
+      broot
+      # magic-wormhole
+      moreutils
+      # helix
+      gitui
+      ventoy-full # Bootable usb tool
+      # tilda
+      # mygit
+      git
+    ];
 
-  home.packages = with pkgs; [
-    cifs-utils
-    ncdu # A Amazing tool to find Large Files that you want to delete
-    htop-vim # htop with vim bindings
-    hishtory # A tool for a better bash history
-    eza
-    nil # A Lanuage Server
-    glab
-    # ranger
-    broot
-    # magic-wormhole
-    moreutils
-    # helix
-    gitui
-    ventoy-full # Bootable usb tool
-    # tilda
-    # mygit
-    git
-  ];
-
+    stateVersion = "23.11"; # Please read the comment before changing.
+  };
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-  home.stateVersion = "23.11"; # Please read the comment before changing.
 }

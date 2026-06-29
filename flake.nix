@@ -32,6 +32,8 @@
         config.allowUnfree = true;
       };
 
+      pkgs = nixpkgs.legacyPackages."x86_64-linux";
+
       pkgs-stable = import inputs.nixpkgs-stable commonPkgsArgs;
     in
     {
@@ -98,6 +100,21 @@
         };
       };
 
+      devShells."x86_64-linux".default = pkgs.mkShell {
+        packages = [
+          deploy-rs.outputs.packages."x86_64-linux".deploy-rs
+        ]
+        ++ (with pkgs; [
+          pre-commit
+          nixfmt
+          statix
+          deadnix
+        ]);
+        shellHook = /* bash */ ''
+          pre-commit install
+        '';
+      };
+
       deploy.nodes.nixos-onedev = {
         hostname = "nixos-onedev";
         profiles.system = {
@@ -107,6 +124,6 @@
         };
       };
 
-      # checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
+      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
     };
 }

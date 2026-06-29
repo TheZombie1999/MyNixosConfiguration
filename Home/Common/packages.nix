@@ -37,5 +37,7 @@
     yubikey-manager
     yubico-pam
     claude-code
+    just
+    sops
   ];
 }

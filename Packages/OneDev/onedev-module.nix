@@ -29,14 +29,14 @@ in
 
   config =
     let
-      onedev = pkgs.callPackage ./onedev.nix { installDir = cfg.installDir; };
-      hibernateConfig = pkgs.callPackage ./hibernate-config.nix { installDir = cfg.installDir; };
-      serverConfig = pkgs.callPackage ./server-config.nix { installDir = cfg.installDir; };
+      onedev = pkgs.callPackage ./onedev.nix { inherit (cfg) installDir; };
+      hibernateConfig = pkgs.callPackage ./hibernate-config.nix { inherit (cfg) installDir; };
+      serverConfig = pkgs.callPackage ./server-config.nix { inherit (cfg) installDir; };
     in
     lib.mkIf cfg.enable {
 
       environment.systemPackages = [ onedev ];
-      
+
       fileSystems = {
         "/opt/onedev" = {
           overlay = {

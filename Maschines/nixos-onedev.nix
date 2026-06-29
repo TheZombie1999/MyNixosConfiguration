@@ -58,7 +58,7 @@
     ncdu
     nmon
     kitty
-    (chromium.override { enableWideVine = true; })
+    # (chromium.override { enableWideVine = true; })
 
     # Disk formatting & partitioning
     parted
