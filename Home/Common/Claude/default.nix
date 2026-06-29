@@ -1,6 +1,9 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
+
+  home.packages = with pkgs; [ mcp-nixos mcp-server-git ];
+  
   home.file."claude-settings" = {
     source = ./settings.json;
     target = ".claude/settings.json";
