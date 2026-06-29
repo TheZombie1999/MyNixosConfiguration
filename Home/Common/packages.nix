@@ -20,7 +20,6 @@
     lnav # Logfile navigator
     meh # Super Light wait image viewer
     nil
-    nixfmt
     moreutils
     nil
     nixfmt-rs

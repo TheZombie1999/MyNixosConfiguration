@@ -4,7 +4,6 @@
   # List of langue servers required by helix
   home.packages = with pkgs; [
     nixd
-    nixfmt-rfc-style
     prettier
     black
     shellcheck
