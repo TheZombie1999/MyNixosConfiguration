@@ -34,13 +34,8 @@
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
-    direnv
     devenv
   ];
-
-  programs.bash.initExtra = ''
-    eval "$(direnv hook bash)"
-  '';
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.

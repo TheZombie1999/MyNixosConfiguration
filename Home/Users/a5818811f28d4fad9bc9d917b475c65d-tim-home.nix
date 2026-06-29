@@ -25,23 +25,36 @@ in
   # release notes.
   home.stateVersion = "25.11"; # Please read the comment before changing.
 
-  home.packages = with pkgs; [
-    direnv
-    devenv
-  ] ++ [ nixgl.auto.nixGLDefault ];
+  home.packages =
+    with pkgs;
+    [
+      devenv
+    ]
+    ++ [ nixgl.auto.nixGLDefault ];
 
   systemd.user.services.custom-bash-service = {
-          Unit = {
-            Description = "";
-            Documentation = "";
-          };
+    Unit = {
+      Description = "";
+      Documentation = "";
+    };
 
-          Service = {
-            ExecStart = "${pkgs.writeShellScript "custom-script" (builtins.readFile ./custom-script.sh)}";
-            Environment = "PATH=${lib.makeBinPath [ pkgs.curl pkgs.glib pkgs.qt5.qttools pkgs.xfconf pkgs.lxqt.pcmanfm-qt pkgs.feh pkgs.coreutils pkgs.findutils ]}:$PATH";
-            Restart = "on-failure";
-          };
-        };
+    Service = {
+      ExecStart = "${pkgs.writeShellScript "custom-script" (builtins.readFile ./custom-script.sh)}";
+      Environment = "PATH=${
+        lib.makeBinPath [
+          pkgs.curl
+          pkgs.glib
+          pkgs.qt5.qttools
+          pkgs.xfconf
+          pkgs.lxqt.pcmanfm-qt
+          pkgs.feh
+          pkgs.coreutils
+          pkgs.findutils
+        ]
+      }:$PATH";
+      Restart = "on-failure";
+    };
+  };
 
   systemd.user.timers.custom-bash-service = {
     Timer = {
@@ -53,10 +66,6 @@ in
       WantedBy = [ "timers.target" ];
     };
   };
-
-  programs.bash.initExtra = ''
-    eval "$(direnv hook bash)"
-  '';
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
