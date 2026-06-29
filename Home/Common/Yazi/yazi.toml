@@ -29,7 +29,6 @@ mpv = [
   { run = "mpv %s", orphan = true, block = false },
 ]
 
-
 [open]
 prepend_rules = [
 	{ mime = "text/*", use = "zellij" },

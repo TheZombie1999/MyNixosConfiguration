@@ -4,11 +4,8 @@
 
 {
   config,
-<<<<<<< HEAD
   lib,
-=======
   onedev,
->>>>>>> 53d6190 (fix merge conflict)
   pkgs,
   home-manager,
   nix-colors,
@@ -20,10 +17,6 @@
 {
   imports = [
     ./../Hardware/moab-hardware-configuration.nix
-<<<<<<< HEAD
-=======
-    # ./../Packages/OneDev/onedev-module.nix
->>>>>>> 53d6190 (fix merge conflict)
     inputs.onedev.nixosModules.onedev
     inputs.sops-nix.nixosModules.sops
     home-manager.nixosModules.home-manager
@@ -224,10 +217,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-<<<<<<< HEAD
     mangohud
-=======
->>>>>>> 53d6190 (fix merge conflict)
     age-plugin-yubikey
     age-plugin-1p
     atlauncher

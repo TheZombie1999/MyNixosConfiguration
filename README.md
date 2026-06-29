@@ -23,11 +23,7 @@ A Collection Of my nixos maschines and their configuration.
 
 * Brother Drucker
 
-<<<<<<< HEAD
-# Hardware Currently not in use that could be reinstated.
-=======
 # Hardware Currentyl not in use that could be reinstated.
->>>>>>> 53d6190 (fix merge conflict)
 
 * Raspberry Pi
 * Hvb Dev Board
@@ -42,11 +38,7 @@ A Collection Of my nixos maschines and their configuration.
 * Homer
 * Nixos (Test VM's does do anything yet)
 
-<<<<<<< HEAD
-# IP Addresses
-=======
 # Ip Addresses
->>>>>>> 53d6190 (fix merge conflict)
 ## DHCP 
 
 The DHCP Range is from 200 to 254.
