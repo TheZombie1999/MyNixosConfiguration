@@ -1,11 +1,10 @@
-
 # Tim's Bjarne Configuration
 
-{ config, pkgs,... }:
+{ pkgs, ... }:
 
 let
   nix-colors = import <nix-colors> { };
-in 
+in
 {
 
   imports = [
@@ -17,14 +16,13 @@ in
 
   home.username = "tim";
   home.homeDirectory = "/home/tim";
-  
+
   programs.ranger = {
     enable = true;
     settings = {
       column_ratios = "1,2,3";
     };
   };
-    
 
   home.packages = with pkgs; [
     ncdu # A Amazing tool to find Large Files that you want to delete
@@ -41,9 +39,9 @@ in
   # plain files is through 'home.file'.
   home.file = {
     # Bashrc
-    # ".bashrc".source = ./bashrc;                      
+    # ".bashrc".source = ./bashrc;
     ".gnu-agent" = {
-      source =  ./../gnu-agent;
+      source = ./../gnu-agent;
       target = ".gnupg/gnu-agent";
     };
   };

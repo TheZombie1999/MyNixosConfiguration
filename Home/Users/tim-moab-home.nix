@@ -1,4 +1,4 @@
-{ config, pkgs, nix-colors, ... }:
+{ pkgs, nix-colors, ... }:
 
 {
   imports = [
@@ -37,8 +37,6 @@
     direnv
     devenv
   ];
-
-
 
   programs.bash.initExtra = ''
     eval "$(direnv hook bash)"
@@ -80,7 +78,6 @@
   };
 
   services.ssh-agent.enable = true;
-
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;

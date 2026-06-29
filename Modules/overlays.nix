@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ ... }:
 {
-   nixpkgs.overlays = [ ];
+  nixpkgs.overlays = [ ];
 }

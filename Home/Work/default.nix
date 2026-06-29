@@ -1,7 +1,7 @@
-{config, pkgs, ...}:
+{ ... }:
 
 {
- imports = [
+  imports = [
     ./labor.nix
     ./packages.nix
     ./bash.nix

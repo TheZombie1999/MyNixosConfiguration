@@ -1,15 +1,12 @@
 {
   config,
   lib,
-  options,
   pkgs,
-  utils,
   ...
 }:
 
 let
   cfg = config.services.onedev;
-  opt = options.services.onedev;
 in
 {
   imports = [ ];

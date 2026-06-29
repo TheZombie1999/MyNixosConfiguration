@@ -5,13 +5,13 @@
 # NixOS-WSL specific options are documented on the NixOS-WSL repository:
 # https://github.com/nix-community/NixOS-WSL
 
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
     # include NixOS-WSL modules
     <nixos-wsl/modules>
-    <home-manager/nixos>    
+    <home-manager/nixos>
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -20,15 +20,22 @@
   wsl.defaultUser = "tim";
 
   # virtualisation.docker.enable = true;
-  
+
   users.users.tim = {
     name = "tim";
     home = "/home/tim";
-    extraGroups = [ "wheel" "audio" "docker" ];
+    extraGroups = [
+      "wheel"
+      "audio"
+      "docker"
+    ];
     isNormalUser = true;
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # services.jenkins.enable = true;
   # services.paperless.enable = true;
@@ -46,7 +53,6 @@
 
   home-manager.users.tim = (import ./../MyHomeConfiguration/Users/tim-nixosWsl.nix).dark;
   services.openssh.enable = true;
-
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

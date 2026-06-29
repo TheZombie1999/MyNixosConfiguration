@@ -3,14 +3,11 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 {
-  config,
   lib,
-  onedev,
   pkgs,
   home-manager,
   nix-colors,
   inputs,
-  pkgs-stable,
   ...
 }:
 
