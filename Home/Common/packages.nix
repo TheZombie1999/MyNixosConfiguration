@@ -21,7 +21,6 @@
     meh # Super Light wait image viewer
     moreutils
     nil
-    nixfmt
     moreutils
     nil
     nixfmt-rs
