@@ -60,8 +60,6 @@ in
     # tilda
     # mygit
     git
-    _1password-cli
-    _1password-gui
   ];
 
   # Let Home Manager install and manage itself.
