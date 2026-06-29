@@ -22,3 +22,6 @@ edit-secrets:
 # Build a Minimal bootstrap image
 build-bootstrap-image:
     nixos-rebuild build-image --flake .#bootstrap --image-variant proxmox-lxc
+
+push:
+    git push && git push github master
