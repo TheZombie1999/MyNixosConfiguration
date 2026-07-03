@@ -8,7 +8,6 @@
 
   home.packages = with pkgs; [
     direnv
-    devenv
   ];
 
   programs.bash = {
@@ -50,7 +49,6 @@
       fi
 
       eval "$(direnv hook bash)"
-      eval "$(devenv hook bash)"
     '';
     shellAliases = {
       ls = "eza --group-directories-first -I \"jre|snap|Music|CLionProjects|Desktop\"";
