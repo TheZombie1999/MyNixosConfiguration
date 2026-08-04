@@ -1,15 +1,12 @@
 {
   lib,
-  pkgs,
   pkgs-unstable,
   ...
 }:
 
 {
 
-  home.packages = with pkgs; [
-    direnv
-  ];
+  home.packages = with pkgs-unstable; [ devenv ];
 
   programs.bash = {
     enable = true;
@@ -49,7 +46,8 @@
           eval "$(zellij setup --generate-auto-start bash)"
       fi
 
-      eval "$(direnv hook bash)"
+      eval "$(devenv hook bash)"
+
     '';
     shellAliases = {
       ls = "eza --group-directories-first -I \"jre|snap|Music|CLionProjects|Desktop\"";

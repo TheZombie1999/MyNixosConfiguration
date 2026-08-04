@@ -26,6 +26,12 @@ build-bootstrap-image:
 push:
     git push && git push github master
 
+# Check incoming changes from all remotes without pulling
+fetch-preview:
+    git fetch --all
+    @echo "=== origin ===" && git log HEAD..origin/master --oneline
+    @echo "=== github ===" && git log HEAD..github/master --oneline
+
 # Upload the built bootstrap LXC image to Proxmox
 upload-bootstrap-image:
     scp ./result/tarball/nixos-image-lxc-proxmox-*.tar.xz root@proxmox.local:/var/lib/vz/template/cache/
