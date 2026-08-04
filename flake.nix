@@ -106,10 +106,9 @@
           statix
           deadnix
         ]);
-        shellHook = # bash
-          ''
-            pre-commit install
-          '';
+        shellHook = ''
+          pre-commit install
+        '';
       };
 
       deploy.nodes.nixos-onedev = {

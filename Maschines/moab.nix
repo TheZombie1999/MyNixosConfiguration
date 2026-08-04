@@ -209,7 +209,7 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.allowBroken = true;
+  nixpkgs.config.allowBroken = false;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -255,6 +255,12 @@
     ++ (with pkgs-unstable; [
       thunderbird-cli
     ]);
+
+  environment.plasma6.excludePackages = with pkgs; [
+    kdePackages.kwallet
+    kdePackages.kwallet-pam
+    kdePackages.kwalletmanager
+  ];
 
   # services.yubikey-agent.enable = true;
 

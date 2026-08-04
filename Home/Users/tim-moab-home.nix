@@ -1,4 +1,4 @@
-{ pkgs, nix-colors, ... }:
+{ nix-colors, ... }:
 
 {
   imports = [
@@ -24,18 +24,17 @@
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = with pkgs; [
-    # # Adds the 'hello' command to your environment. It prints a friendly
-    # # "Hello, world!" when run.
-    # pkgs.hello
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
-    devenv
-  ];
+  # home.packages = with pkgs; [
+  #   # # Adds the 'hello' command to your environment. It prints a friendly
+  #   # # "Hello, world!" when run.
+  #   # pkgs.hello
+  #   # # You can also create simple shell scripts directly inside your
+  #   # # configuration. For example, this adds a command 'my-hello' to your
+  #   # # environment:
+  #   # (pkgs.writeShellScriptBin "my-hello" ''
+  #   #   echo "Hello, ${config.home.username}!"
+  #   # '')
+  # ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
