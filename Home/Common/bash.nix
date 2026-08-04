@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  pkgs-unstable,
   ...
 }:
 
@@ -61,6 +62,7 @@
   programs.atuin = {
     enable = true;
     enableBashIntegration = true;
+    package = pkgs-unstable.atuin;
   };
 
   programs.zoxide = {

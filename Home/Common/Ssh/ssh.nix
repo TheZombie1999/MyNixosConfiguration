@@ -23,6 +23,6 @@
 
   services.ssh-agent = {
     enable = true;
-    pkcs11Whitelist = [ "/nix/store/*" ];
+    # pkcs11Whitelist = [ "/nix/store/*" ]; # not available in home-manager 25.05
   };
 }

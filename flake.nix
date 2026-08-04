@@ -2,16 +2,17 @@
   description = "My Private Nixos Flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-    home-manager.url = "github:nix-community/home-manager";
+    home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nix-colors.url = "github:misterio77/nix-colors";
     deploy-rs.url = "github:serokell/deploy-rs";
-    sheets.url = "github:maaslalani/sheets";
-    onedev.url = "/home/tim/OneDev/Onedev-Nixos-Flake";
+    # sheets.url = "github:maaslalani/sheets/v0.3.0";
+    # onedev.url = "github:thezombie1999/Onedev-Nixos-Flake";
+    finanzbro.url = "path:/home/tim/OneDev/FinanzeBro";
   };
 
   outputs =
@@ -21,11 +22,9 @@
       home-manager,
       nix-colors,
       deploy-rs,
-      onedev,
       ...
     }@inputs:
     let
-      # Common config for both stable and unstable
       commonPkgsArgs = {
         system = "x86_64-linux";
         config.allowUnfree = true;
@@ -33,7 +32,7 @@
 
       pkgs = nixpkgs.legacyPackages."x86_64-linux";
 
-      pkgs-stable = import inputs.nixpkgs-stable commonPkgsArgs;
+      pkgs-unstable = import inputs.nixpkgs-unstable commonPkgsArgs;
     in
     {
       nixosConfigurations = {
@@ -47,7 +46,7 @@
             inherit inputs;
             inherit home-manager;
             inherit nix-colors;
-            inherit pkgs-stable;
+            inherit pkgs-unstable;
           };
           modules = [
             ./Maschines/microstar.nix
@@ -59,8 +58,7 @@
             inherit inputs;
             inherit home-manager;
             inherit nix-colors;
-            inherit onedev;
-            inherit pkgs-stable;
+            inherit pkgs-unstable;
           };
           modules = [
             ./Maschines/moab.nix
@@ -72,6 +70,7 @@
             inherit inputs;
             inherit home-manager;
             inherit nix-colors;
+            inherit pkgs-unstable;
           };
           modules = [
             ./Maschines/lenovo.nix
@@ -79,9 +78,6 @@
         };
         "nixos-onedev" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = {
-            inherit onedev;
-          };
           modules = [
             ./Maschines/nixos-onedev.nix
           ];
@@ -92,6 +88,7 @@
             inherit inputs;
             inherit home-manager;
             inherit nix-colors;
+            inherit pkgs-unstable;
           };
           modules = [
             ./Maschines/wsl.nix
@@ -109,9 +106,10 @@
           statix
           deadnix
         ]);
-        shellHook = /* bash */ ''
-          pre-commit install
-        '';
+        shellHook = # bash
+          ''
+            pre-commit install
+          '';
       };
 
       deploy.nodes.nixos-onedev = {

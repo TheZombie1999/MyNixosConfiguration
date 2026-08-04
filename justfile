@@ -5,7 +5,7 @@ moab-rebuild: moab-deploy-age-key
 
 # Install sops key
 moab-deploy-age-key:
-    op read "op://Personal/Sops-Nix age key/keys.txt" > ~/.config/sops/age/keys.txt
+    [ -f ~/.config/sops/age/keys.txt ] || op read "op://Personal/Sops-Nix age key/keys.txt" > ~/.config/sops/age/keys.txt
 
 # Load resident keys from a FIDO authenticator.
 load-fidokey-from-yubikey:
@@ -32,3 +32,11 @@ upload-bootstrap-image:
 
 deploy-nixos-onedev:
     deploy -s .#nixos-onedev
+
+clean:
+    sudo nix-collect-garbage -d
+    nix-collect-garbage -d
+
+update-local:
+    nix flake update finazebro
+    nix flake update onedev

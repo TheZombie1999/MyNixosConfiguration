@@ -3,6 +3,7 @@
 {
   nixpkgs.config.allowUnfree = true;
   home.packages = with pkgs; [
+    obsidian
     zellij
     tree
     moreutils
@@ -18,12 +19,8 @@
     jq
     keepassxc
     lnav # Logfile navigator
-    meh # Super Light wait image viewer
     moreutils
     nil
-    moreutils
-    nil
-    nixfmt-rs
     shfmt
     sttr # Easy String manipulation cli tool
     tree-sitter

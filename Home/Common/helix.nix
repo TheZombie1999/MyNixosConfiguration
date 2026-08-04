@@ -1,16 +1,22 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
 
 {
   # List of langue servers required by helix
-  home.packages = with pkgs; [
+  home.packages = with pkgs-unstable; [
     nixd
+    nixfmt
     prettier
     black
     shellcheck
     ruff
-    python312Packages.python-lsp-server
     typescript-language-server
     lua51Packages.lua-lsp
+    tinymist
   ];
 
   programs.helix = {
