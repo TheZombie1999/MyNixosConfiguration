@@ -2,7 +2,7 @@
 
 {
 
-  home.packages = [ pkgs.openssh ];
+  # home.packages = [ pkgs.openssh ];
 
   home.file."sshconfig" = {
     target = ".ssh/config";
@@ -23,6 +23,9 @@
 
   services.ssh-agent = {
     enable = true;
-    pkcs11Whitelist = [ "/nix/store/*" ];
+    pkcs11Whitelist = [
+      "/nix/store/*"
+      "/usr/lib/x86_64-linux-gnu/*"
+    ];
   };
 }

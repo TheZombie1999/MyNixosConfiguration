@@ -39,5 +39,6 @@
     claude-code
     just
     sops
+    oxker
   ];
 }

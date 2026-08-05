@@ -11,6 +11,9 @@
     python312Packages.python-lsp-server
     typescript-language-server
     lua51Packages.lua-lsp
+    bash-language-server
+    shfmt
+    clang-tools
   ];
 
   programs.helix = {
@@ -150,7 +153,26 @@
   };
 
   programs.helix.languages = {
+    language-server = {
+      "clangd" = {
+        command = "clangd-in-docker.sh";
+      };
+    };
+
     language = [
+      {
+        name = "cpp";
+        formatter = {
+          command = "clang-format";
+        };
+      }
+      {
+        name = "bash";
+        formatter = {
+          command = "shfmt";
+        };
+      }
+
       {
         name = "json";
         formatter = {

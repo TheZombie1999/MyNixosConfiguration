@@ -41,7 +41,7 @@ function main() {
   channelExistsOrAdd nixgl https://github.com/nix-community/nixGL/archive/main.tar.gz
 
   echo -e "$grn Update Nix Channels $clr"
-  nix-channel --update
+  # nix-channel --update
 
   echo -e "$grn Installing File ${homeFileToInstall} $clr"
   export NIXPKGS_ALLOW_UNFREE=1

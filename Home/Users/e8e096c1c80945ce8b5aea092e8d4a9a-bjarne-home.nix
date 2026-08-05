@@ -37,7 +37,8 @@ in
     export CMAKE_EXPORT_COMPILE_COMMANDS=1
     export NIXPKGS_ALLOW_UNFREE=1
 
-    PATH="$PATH:/snap/bin"
+    export PATH="$PATH:/snap/bin"
+    export PATH="$PATH:~/Scripts"
   '';
 
   home = {
