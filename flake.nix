@@ -13,6 +13,7 @@
     # sheets.url = "github:maaslalani/sheets/v0.3.0";
     # onedev.url = "github:thezombie1999/Onedev-Nixos-Flake";
     finanzbro.url = "path:/home/tim/OneDev/FinanzeBro";
+    tuicr.url = "github:agavra/tuicr";
   };
 
   outputs =

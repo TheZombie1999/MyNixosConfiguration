@@ -231,6 +231,7 @@
       bubblewrap
       # inputs.sheets.packages.x86_64-linux.default
       inputs.finanzbro.packages.x86_64-linux.default
+      inputs.tuicr.packages.x86_64-linux.default
 
       # KDE Utilities
       kdePackages.kcalc # Calculator
