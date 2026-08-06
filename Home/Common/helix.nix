@@ -17,6 +17,7 @@
     typescript-language-server
     lua51Packages.lua-lsp
     tinymist
+    rust-analyzer
   ];
 
   programs.helix = {
