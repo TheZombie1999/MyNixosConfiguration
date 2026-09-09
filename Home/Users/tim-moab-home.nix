@@ -4,6 +4,7 @@
   imports = [
     nix-colors.homeManagerModules.default
     ../Common
+    ../Scripts
   ];
 
   colorScheme = nix-colors.colorSchemes.gruvbox-dark-hard;

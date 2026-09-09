@@ -12,7 +12,7 @@
     deploy-rs.url = "github:serokell/deploy-rs";
     # sheets.url = "github:maaslalani/sheets/v0.3.0";
     # onedev.url = "github:thezombie1999/Onedev-Nixos-Flake";
-    finanzbro.url = "path:/home/tim/OneDev/FinanzeBro";
+    # finanzbro.url = "path:/home/tim/OneDev/FinanzeBro";
     tuicr.url = "github:agavra/tuicr";
   };
 

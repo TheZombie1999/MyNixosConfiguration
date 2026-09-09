@@ -152,7 +152,7 @@
 
   services.xserver.displayManager.lightdm.enable = true;
 
-  services.xserver.desktopManager.gnome.enable = true;
+  services.desktopManager.gnome.enable = true;
   services.xserver.windowManager.i3.enable = true;
   programs.hyprland.enable = true;
   programs.niri.enable = true;
@@ -178,13 +178,26 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    # wireplumber.extraConfig = {
+    #   "10-blue-mic" = {
+    #     "monitor.alsa.rules" = [
+    #       {
+    #         matches = [ { "device.name" = "alsa_card.usb-Generic_Blue_Microphones_2226BAH00HE8-00"; } ];
+    #         actions.update-props = {
+    #           "api.acp.auto-profile" = true;
+    #           "api.acp.auto-port" = true;
+    #         };
+    #       }
+    #     ];
+    #   };
+    # };
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -199,6 +212,7 @@
       "plugdev"
       "pcscd"
       "libvirtd"
+      "docker"
     ];
   };
 
@@ -229,8 +243,11 @@
       sddm-sugar-dark
       sddm-astronaut
       bubblewrap
+      teams-for-linux
+      libreoffice
+      xournalpp
       # inputs.sheets.packages.x86_64-linux.default
-      inputs.finanzbro.packages.x86_64-linux.default
+      # inputs.finanzbro.packages.x86_64-linux.default
       inputs.tuicr.packages.x86_64-linux.default
 
       # KDE Utilities
@@ -366,6 +383,8 @@
   '';
   services.gvfs.enable = true;
 
+  security.chromiumSuidSandbox.enable = true;
+
   # Authorize the active session for PC/SC access via polkit
   # security.polkit.extraConfig = ''
   #   polkit.addRule(function(action, subject) {
@@ -388,6 +407,8 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   networking.firewall.enable = false;
+
+  virtualisation.docker.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
