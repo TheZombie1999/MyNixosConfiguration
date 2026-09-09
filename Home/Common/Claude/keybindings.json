@@ -5,8 +5,10 @@
     {
       "context": "Scroll",
       "bindings": {
-        "alt+d": "scroll:pageDown",
-        "alt+u": "scroll:pageUp"
+        "alt+j": "scroll:pageDown",
+        "alt+k": "scroll:pageUp",
+        "alt+n": "scroll:pageDown",
+        "alt+p": "scroll:pageUp"
       }
     }
   ]
