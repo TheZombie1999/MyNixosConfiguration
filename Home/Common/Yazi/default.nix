@@ -1,11 +1,16 @@
 { pkgs, ... }:
 {
 
-  home.packages = [ pkgs.mpv pkgs.nsxiv (pkgs.callPackage ./yaziOpener.nix { }) ];
+  home.packages = [
+    pkgs.mpv
+    pkgs.nsxiv
+    (pkgs.callPackage ./yaziOpener.nix { })
+  ];
 
   programs.yazi = {
     enable = true;
     enableBashIntegration = true;
+    shellWrapperName = "yy";
   };
 
   home.file."yazi.toml" = {

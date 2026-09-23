@@ -2,6 +2,7 @@
 {
 
   home.packages = [
+    pkgs.wl-clipboard
     (pkgs.writeShellScriptBin "group" (builtins.readFile ./group.sh))
     (pkgs.writeScriptBin "selectlayout" (builtins.readFile ./selectLayout.sh))
   ];

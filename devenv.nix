@@ -1,14 +1,16 @@
 { pkgs, ... }:
-
+# let
+# pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system};
+# in
 {
-  # https://devenv.sh/basics/
-  env.GREET = "devenv";
+  packages = with pkgs; [
+    pre-commit
+    nixfmt
+    statix
+    deadnix
+  ];
 
-  # https://devenv.sh/packages/
-  packages = [ pkgs.git ];
-
-  # https://devenv.sh/basics/
   enterShell = ''
-    nix develop
+    pre-commit install
   '';
 }

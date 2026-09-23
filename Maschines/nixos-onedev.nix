@@ -4,6 +4,9 @@
   ...
 }:
 
+let
+  git-shell-commands = pkgs.callPackage ../Packages/git-shell-commands/package.nix { };
+in
 {
   imports = [
     (modulesPath + "/virtualisation/proxmox-lxc.nix")
@@ -22,17 +25,30 @@
   };
 
   # Main user: tim (sudo without password, SSH key auth only)
-  users.users.tim = {
-    isNormalUser = true;
-    extraGroups = [
-      "wheel"
-      "networkmanager"
-      "video"
-      "audio"
-    ];
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFSQmujNkQVQHO1+T0BYABedfEn2QFRJIL9ePe0nxTBF tim@nixos"
-    ];
+  users.users = {
+    tim = {
+      isNormalUser = true;
+      extraGroups = [
+        "wheel"
+        "networkmanager"
+        "video"
+        "audio"
+      ];
+      openssh.authorizedKeys.keys = [
+        "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIK5ynhdh9jUSrKGll4ZOw4Krji+ipGNfsFKu6EmbEpVMAAAABHNzaDo= ssh:"
+      ];
+    };
+
+    git = {
+      isNormalUser = true;
+      home = "/home/git";
+      description = "user to access git repos on this server";
+      openssh.authorizedKeys.keys = [
+        "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIK5ynhdh9jUSrKGll4ZOw4Krji+ipGNfsFKu6EmbEpVMAAAABHNzaDo= ssh:"
+      ];
+      shell = "${pkgs.git}/bin/git-shell";
+      linger = true;
+    };
   };
 
   # No passwords anywhere (rely on SSH keys)
@@ -57,8 +73,6 @@
     iftop
     ncdu
     nmon
-    kitty
-    # (chromium.override { enableWideVine = true; })
 
     # Disk formatting & partitioning
     parted
@@ -98,25 +112,6 @@
     mtr
 
     ncdu
-
-    # KDE Utilities
-    kdePackages.discover # Optional: Software center for Flatpaks/firmware updates
-    kdePackages.kcalc # Calculator
-    kdePackages.kcharselect # Character map
-    kdePackages.kclock # Clock app
-    kdePackages.kcolorchooser # Color picker
-    kdePackages.kolourpaint # Simple paint program
-    kdePackages.ksystemlog # System log viewer
-    kdePackages.sddm-kcm # SDDM configuration module
-    kdiff3 # File/directory comparison tool
-
-    # Hardware/System Utilities (Optional)
-    kdePackages.isoimagewriter # Write hybrid ISOs to USB
-    kdePackages.partitionmanager # Disk and partition management
-    hardinfo2 # System benchmarks and hardware info
-    wayland-utils # Wayland diagnostic tools
-    wl-clipboard # Wayland copy/paste support
-    vlc # Media player
   ];
 
   # QEMU guest agent (essential for Proxmox VM management: shutdown, IP reporting, etc.)
@@ -139,6 +134,10 @@
     displayManager.sddm.enable = true;
     displayManager.sddm.wayland.enable = true;
   };
+
+  systemd.user.tmpfiles.users."git".rules = [
+    "L /home/git/git-shell-commands - - - - ${git-shell-commands}/share/git-shell-commands"
+  ];
 
   # State version (update only when you know what you're doing)
   system.stateVersion = "25.11";

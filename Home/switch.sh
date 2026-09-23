@@ -3,7 +3,8 @@
 
 set -euo pipefail
 
-source ./Scripts/Colors/colors.include
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/Scripts/Colors/colors.include"
 
 function channelExistsOrAdd() {
   local channelName="${1}"
@@ -23,7 +24,7 @@ function channelExistsOrAdd() {
 function main() {
   local USER="$1"
   local MACHINEID="$2"
-  local homeFileToInstall="./Users/${MACHINEID}-${USER}-home.nix"
+  local homeFileToInstall="${SCRIPT_DIR}/Users/${MACHINEID}-${USER}-home.nix"
 
   COLORMODE="${COLORMODE:-dark}"
 
@@ -37,7 +38,7 @@ function main() {
   channelExistsOrAdd home-manager https://github.com/nix-community/home-manager/archive/master.tar.gz
   channelExistsOrAdd nix-colors https://github.com/misterio77/nix-colors/archive/main.tar.gz
   channelExistsOrAdd nixpkgs https://nixos.org/channels/nixpkgs-unstable
-  channelExistsOrAdd nixpkgs-stable https://nixos.org/channels/nixos-23.11
+  channelExistsOrAdd nixpkgs-stable https://nixos.org/channels/nixos-26.06
   channelExistsOrAdd nixgl https://github.com/nix-community/nixGL/archive/main.tar.gz
 
   echo -e "$grn Update Nix Channels $clr"

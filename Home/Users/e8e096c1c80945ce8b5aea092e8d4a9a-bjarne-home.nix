@@ -4,6 +4,8 @@ let
   nix-colors = import <nix-colors> { };
 in
 {
+  _module.args.pkgs-unstable = pkgs;
+
   imports = [
     nix-colors.homeManagerModules.default
     ../Common

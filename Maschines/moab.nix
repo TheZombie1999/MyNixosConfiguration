@@ -5,6 +5,7 @@
 {
   lib,
   pkgs,
+  pkgs-unstable,
   home-manager,
   nix-colors,
   inputs,
@@ -14,7 +15,6 @@
 {
   imports = [
     ./../Hardware/moab-hardware-configuration.nix
-    inputs.onedev.nixosModules.onedev
     inputs.sops-nix.nixosModules.sops
     home-manager.nixosModules.home-manager
   ];
@@ -34,13 +34,13 @@
   #];
   #};
   #
-  services.onedev.enable = true;
+  services.tailscale.enable = true;
 
   services.desktopManager.plasma6.enable = true;
   programs.seahorse.enable = false;
 
   home-manager.users.tim = import ./../Home/Users/tim-moab-home.nix;
-  home-manager.extraSpecialArgs = { inherit nix-colors; };
+  home-manager.extraSpecialArgs = { inherit nix-colors pkgs-unstable; };
   home-manager.backupFileExtension = "backup";
 
   services.yubikey-agent.enable = true;
@@ -209,46 +209,57 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.allowBroken = true;
+  nixpkgs.config.allowBroken = false;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    mangohud
-    age-plugin-yubikey
-    age-plugin-1p
-    atlauncher
-    prismlauncher
-    helix
-    wezterm
-    helix
-    htop
-    git
-    kitty
-    sddm-sugar-dark
-    sddm-astronaut
-    bubblewrap
-    inputs.sheets.packages.x86_64-linux.default
+  environment.systemPackages =
+    (with pkgs; [
+      thunderbird
+      mangohud
+      age-plugin-yubikey
+      age-plugin-1p
+      atlauncher
+      prismlauncher
+      helix
+      wezterm
+      htop
+      git
+      kitty
+      sddm-sugar-dark
+      sddm-astronaut
+      bubblewrap
+      # inputs.sheets.packages.x86_64-linux.default
+      inputs.finanzbro.packages.x86_64-linux.default
 
-    # KDE Utilities
-    kdePackages.kcalc # Calculator
-    kdePackages.kcharselect # Character map
-    kdePackages.kclock # Clock app
-    kdePackages.kcolorchooser # Color picker
-    kdePackages.kolourpaint # Simple paint program
-    kdePackages.ksystemlog # System log viewer
-    kdePackages.sddm-kcm # SDDM configuration module
-    kdiff3 # File/directory comparison tool
+      # KDE Utilities
+      kdePackages.kcalc # Calculator
+      kdePackages.kcharselect # Character map
+      kdePackages.kclock # Clock app
+      kdePackages.kcolorchooser # Color picker
+      kdePackages.kolourpaint # Simple paint program
+      kdePackages.ksystemlog # System log viewer
+      kdePackages.sddm-kcm # SDDM configuration module
+      kdiff3 # File/directory comparison tool
 
-    # Hardware/System Utilities (Optional)
-    kdePackages.isoimagewriter # Write hybrid ISOs to USB
-    kdePackages.partitionmanager # Disk and partition management
-    hardinfo2 # System benchmarks and hardware info
-    wayland-utils # Wayland diagnostic tools
-    wl-clipboard # Wayland copy/paste support
-    vlc # Media player
+      # Hardware/System Utilities (Optional)
+      kdePackages.isoimagewriter # Write hybrid ISOs to USB
+      kdePackages.partitionmanager # Disk and partition management
+      hardinfo2 # System benchmarks and hardware info
+      wayland-utils # Wayland diagnostic tools
+      wl-clipboard # Wayland copy/paste support
+      vlc # Media player
 
-    yubico-piv-tool
+      yubico-piv-tool
+    ])
+    ++ (with pkgs-unstable; [
+      thunderbird-cli
+    ]);
+
+  environment.plasma6.excludePackages = with pkgs; [
+    kdePackages.kwallet
+    kdePackages.kwallet-pam
+    kdePackages.kwalletmanager
   ];
 
   # services.yubikey-agent.enable = true;
@@ -256,8 +267,9 @@
   programs._1password.enable = true;
   programs._1password-gui.enable = true;
   programs._1password-gui.polkitPolicyOwners = [ "tim" ];
+  programs._1password.package = pkgs-unstable._1password-cli;
 
-  # programs._1password-gui.package = pkgs-stable._1password-gui;
+  # programs._1password-gui.package = pkgs-unstable._1password-gui;
   services.pcscd.enable = true;
   systemd.services.pcscd.serviceConfig = {
     PIDFile = lib.mkForce "";
@@ -351,6 +363,7 @@
      SUBSYSTEM=="hidraw", ATTRS{idVendor}=="04fe", MODE="0666"
      SUBSYSTEM=="usb", ATTRS{idVendor}=="04fe", MODE="0666", GROUP="plugdev"
   '';
+  services.gvfs.enable = true;
 
   # Authorize the active session for PC/SC access via polkit
   # security.polkit.extraConfig = ''
