@@ -7,6 +7,18 @@ moab-rebuild: moab-deploy-age-key
 moab-deploy-age-key:
     [ -f ~/.config/sops/age/keys.txt ] || op read "op://Personal/Sops-Nix age key/keys.txt" > ~/.config/sops/age/keys.txt
 
+# Back up moab's SSH host ed25519 key to 1Password
+moab-backup-host-key:
+    sudo cat /etc/ssh/ssh_host_ed25519_key | op document create - --title "moab ssh_host_ed25519_key" --vault "Personal"
+    cat /etc/ssh/ssh_host_ed25519_key.pub | op document create - --title "moab ssh_host_ed25519_key.pub" --vault "Personal"
+
+# Restore moab's SSH host ed25519 key from 1Password (run before sops can decrypt secrets)
+moab-restore-host-key:
+    op document get "moab ssh_host_ed25519_key" | sudo tee /etc/ssh/ssh_host_ed25519_key > /dev/null
+    sudo chmod 600 /etc/ssh/ssh_host_ed25519_key
+    op document get "moab ssh_host_ed25519_key.pub" | sudo tee /etc/ssh/ssh_host_ed25519_key.pub > /dev/null
+    sudo chmod 644 /etc/ssh/ssh_host_ed25519_key.pub
+
 # Load resident keys from a FIDO authenticator.
 load-fidokey-from-yubikey:
     ssh-add -K
