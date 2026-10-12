@@ -59,7 +59,7 @@ deploy-nixos-onedev:
 # both need a second SSH round-trip from the deploying machine, which this
 # 1GB-RAM box with no stable outbound reachability can't rely on.
 deploy-hetzner-nbg1:
-    deploy .#hetzner-nbg1 --skip-checks --auto-rollback false --magic-rollback false
+    nix develop -c deploy .#hetzner-nbg1 --skip-checks --auto-rollback false --magic-rollback false
 
 clean:
     sudo nix-collect-garbage -d
