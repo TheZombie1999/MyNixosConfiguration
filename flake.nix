@@ -83,6 +83,12 @@
             ./Maschines/nixos-onedev.nix
           ];
         };
+        "hetzner-nbg1" = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./Maschines/hetzner-nbg1.nix
+          ];
+        };
         "wsl" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
@@ -118,6 +124,15 @@
           user = "root";
           path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations."nixos-onedev";
           sshUser = "tim";
+        };
+      };
+
+      deploy.nodes.hetzner-nbg1 = {
+        hostname = "2a01:4f8:1c1c:8a66::1";
+        profiles.system = {
+          user = "root";
+          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations."hetzner-nbg1";
+          sshUser = "root";
         };
       };
 
