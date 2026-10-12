@@ -149,17 +149,18 @@
     ];
   };
 
-  # SSH bastion to onedev.local (192.168.178.101) only -- reachable via the
-  # home-LAN subnet route proxmox1 advertises and this host accepts (see
+  # SSH bastion to nixos-onedev.local (192.168.178.103) only -- reachable via
+  # the home-LAN subnet route proxmox1 advertises and this host accepts (see
   # services.tailscale above). No shell, no other forwarding: command= kills
   # any attempt at an interactive session on hetzner-nbg1 itself with this
-  # key, and permitopen scopes the tunnel to exactly that one host and port.
-  # Usage: ssh -J jump@hetzner.nixhomelab.de tim@192.168.178.101
+  # key, and permitopen scopes the tunnel to exactly that one host and port
+  # -- deliberately not the plain onedev.local git-server container (.101).
+  # Usage: ssh -J jump@hetzner.nixhomelab.de tim@192.168.178.103
   users.users.jump = {
     isNormalUser = true;
     shell = pkgs.shadow; # no interactive shell needed, ProxyJump only uses direct-tcpip
     openssh.authorizedKeys.keys = [
-      ''command="echo 'Bastion: port-forwarding only'",no-agent-forwarding,no-X11-forwarding,no-pty,permitopen="192.168.178.101:22" sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIK5ynhdh9jUSrKGll4ZOw4Krji+ipGNfsFKu6EmbEpVMAAAABHNzaDo=''
+      ''command="echo 'Bastion: port-forwarding only'",no-agent-forwarding,no-X11-forwarding,no-pty,permitopen="192.168.178.103:22" sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIK5ynhdh9jUSrKGll4ZOw4Krji+ipGNfsFKu6EmbEpVMAAAABHNzaDo=''
     ];
   };
 
