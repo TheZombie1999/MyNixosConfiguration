@@ -5,6 +5,11 @@
   ...
 }:
 
+let
+  helixFork =
+    (builtins.getFlake "github:TheZombie1999/helix-with-c3-support/cbfc1a0c22d104aaa61849fe3688a33571a8d2fc")
+    .packages.${pkgs.system}.default;
+in
 {
   # List of langue servers required by helix
   home.packages = with pkgs-unstable; [
@@ -23,6 +28,7 @@
   programs.helix = {
     enable = true;
     defaultEditor = true;
+    package = helixFork;
     settings = {
       theme = "base16";
       editor.lsp = {
@@ -58,6 +64,7 @@
           "C-n" = "select_next_sibling";
           "C-i" = "shrink_selection";
           "C-o" = "expand_selection";
+          "C-q" = "@<C-w>";
         };
       };
     };
