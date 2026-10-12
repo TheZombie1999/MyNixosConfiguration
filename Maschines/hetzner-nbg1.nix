@@ -94,19 +94,24 @@
       # pattern as the existing nixos-onedev deploy node.
       PermitRootLogin = "no";
       X11Forwarding = false;
-      # No one needs port/agent forwarding through this host today. If the SSH
-      # bastion in Specs/hetzner/03-ssh-bastion.md is implemented, that spec's
-      # "jump" user needs a `Match User jump { AllowTcpForwarding yes; }` block
-      # to override this -- permitopen alone does nothing while this is false.
+      # Off by default -- the "jump" user below gets it back via the Match
+      # block, since permitopen alone does nothing while this is false.
       AllowTcpForwarding = false;
       AllowAgentForwarding = false;
-      AllowUsers = [ "tim" ];
+      AllowUsers = [
+        "tim"
+        "jump"
+      ];
       MaxAuthTries = 3;
       LoginGraceTime = 20;
       ClientAliveInterval = 300;
       ClientAliveCountMax = 2;
       LogLevel = "VERBOSE";
     };
+    extraConfig = ''
+      Match User jump
+        AllowTcpForwarding yes
+    '';
   };
 
   # Public-facing SSH port -- ban scanners/crawlers hammering it. Key-only auth
@@ -141,6 +146,20 @@
     linger = true;
     openssh.authorizedKeys.keys = [
       "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIK5ynhdh9jUSrKGll4ZOw4Krji+ipGNfsFKu6EmbEpVMAAAABHNzaDo="
+    ];
+  };
+
+  # SSH bastion to onedev.local (192.168.178.101) only -- reachable via the
+  # home-LAN subnet route proxmox1 advertises and this host accepts (see
+  # services.tailscale above). No shell, no other forwarding: command= kills
+  # any attempt at an interactive session on hetzner-nbg1 itself with this
+  # key, and permitopen scopes the tunnel to exactly that one host and port.
+  # Usage: ssh -J jump@hetzner.nixhomelab.de tim@192.168.178.101
+  users.users.jump = {
+    isNormalUser = true;
+    shell = pkgs.shadow; # no interactive shell needed, ProxyJump only uses direct-tcpip
+    openssh.authorizedKeys.keys = [
+      ''command="echo 'Bastion: port-forwarding only'",no-agent-forwarding,no-X11-forwarding,no-pty,permitopen="192.168.178.101:22" sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIK5ynhdh9jUSrKGll4ZOw4Krji+ipGNfsFKu6EmbEpVMAAAABHNzaDo=''
     ];
   };
 
