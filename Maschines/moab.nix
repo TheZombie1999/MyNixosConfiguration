@@ -80,8 +80,69 @@
 
   hardware.steam-hardware.enable = true;
 
+  # Allow SteamVR to set real-time thread priorities (vrserver calls setschedparam directly)
+  security.pam.loginLimits = [
+    {
+      domain = "tim";
+      type = "-";
+      item = "rtprio";
+      value = "99";
+    }
+    {
+      domain = "tim";
+      type = "-";
+      item = "memlock";
+      value = "unlimited";
+    }
+  ];
+
+  # vrcompositor-launcher needs CAP_SYS_NICE; vrserver needs CAP_SYS_NICE+CAP_NET_ADMIN to manage
+  # the USB dongle AP interface. The path units re-apply caps automatically after SteamVR updates.
+  system.activationScripts.steamvr-caps = {
+    text = ''
+      launcher="/home/tim/.local/share/Steam/steamapps/common/SteamVR/bin/linux64/vrcompositor-launcher"
+      vrserver="/home/tim/.local/share/Steam/steamapps/common/SteamVR/bin/linux64/vrserver"
+      if [ -f "$launcher" ]; then
+        ${pkgs.libcap}/bin/setcap CAP_SYS_NICE=eip "$launcher"
+      fi
+      if [ -f "$vrserver" ]; then
+        ${pkgs.libcap}/bin/setcap CAP_SYS_NICE,CAP_NET_ADMIN=eip "$vrserver"
+      fi
+    '';
+  };
+
+  systemd.services.steamvr-setcap-launcher = {
+    description = "Set CAP_SYS_NICE on SteamVR vrcompositor-launcher";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.libcap}/bin/setcap CAP_SYS_NICE=eip /home/tim/.local/share/Steam/steamapps/common/SteamVR/bin/linux64/vrcompositor-launcher";
+    };
+  };
+
+  systemd.paths.steamvr-setcap-launcher = {
+    description = "Re-apply CAP_SYS_NICE when SteamVR updates vrcompositor-launcher";
+    wantedBy = [ "multi-user.target" ];
+    pathConfig.PathModified = "/home/tim/.local/share/Steam/steamapps/common/SteamVR/bin/linux64/vrcompositor-launcher";
+  };
+
+  systemd.services.steamvr-setcap-vrserver = {
+    description = "Set capabilities on SteamVR vrserver (CAP_SYS_NICE + CAP_NET_ADMIN for dongle AP)";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.libcap}/bin/setcap CAP_SYS_NICE,CAP_NET_ADMIN=eip /home/tim/.local/share/Steam/steamapps/common/SteamVR/bin/linux64/vrserver";
+    };
+  };
+
+  systemd.paths.steamvr-setcap-vrserver = {
+    description = "Re-apply capabilities when SteamVR updates vrserver";
+    wantedBy = [ "multi-user.target" ];
+    pathConfig.PathModified = "/home/tim/.local/share/Steam/steamapps/common/SteamVR/bin/linux64/vrserver";
+  };
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
+  # graceful: don't fail the rebuild if bootctl update exits non-zero (spurious in systemd 260.x)
+  boot.loader.systemd-boot.graceful = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.supportedFilesystems = [ "ntfs" ];
 
@@ -96,6 +157,7 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+  # networking.networkmanager.unmanaged = [ "mac:9c:04:b6:88:b1:9a" ]; # Steam Frame VR dongle
 
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
@@ -264,6 +326,7 @@
       kdePackages.isoimagewriter # Write hybrid ISOs to USB
       kdePackages.partitionmanager # Disk and partition management
       hardinfo2 # System benchmarks and hardware info
+      gamescope # Nested Wayland compositor for Steam Remote Play screen capture
       wayland-utils # Wayland diagnostic tools
       wl-clipboard # Wayland copy/paste support
       vlc # Media player

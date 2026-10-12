@@ -3,6 +3,9 @@
 moab-rebuild: moab-deploy-age-key
     sudo nixos-rebuild switch --flake .#moab
 
+moab-rebuild-after-reboot: moab-deploy-age-key
+    sudo nixos-rebuild boot --flake .#moab
+
 # Install sops key
 moab-deploy-age-key:
     [ -f ~/.config/sops/age/keys.txt ] || op read "op://Personal/Sops-Nix age key/keys.txt" > ~/.config/sops/age/keys.txt

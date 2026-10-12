@@ -74,6 +74,22 @@
 
   services.ssh-agent.enable = true;
 
+  xdg.desktopEntries.steam = {
+    name = "Steam";
+    exec = "steam -pipewire %U";
+    icon = "steam";
+    terminal = false;
+    categories = [
+      "Network"
+      "FileTransfer"
+      "Game"
+    ];
+    mimeType = [
+      "x-scheme-handler/steam"
+      "x-scheme-handler/steamlink"
+    ];
+  };
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
