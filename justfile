@@ -54,6 +54,13 @@ upload-bootstrap-image:
 deploy-nixos-onedev:
     deploy -s .#nixos-onedev
 
+# --skip-checks: nix flake check fails on the unrelated broken bootstrap config
+# (see Specs/hetzner/01-tailscale-join.md). No rollback -- auto/magic-rollback
+# both need a second SSH round-trip from the deploying machine, which this
+# 1GB-RAM box with no stable outbound reachability can't rely on.
+deploy-hetzner-nbg1:
+    deploy .#hetzner-nbg1 --skip-checks --auto-rollback false --magic-rollback false
+
 clean:
     sudo nix-collect-garbage -d
     nix-collect-garbage -d
