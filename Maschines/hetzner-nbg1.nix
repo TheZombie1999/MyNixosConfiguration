@@ -7,9 +7,12 @@
 
   networking.hostName = "hetzner-nbg1";
 
-  # Hetzner Cloud: statically-assigned IPv6 (not SLAAC/DHCPv6), IPv4 is NAT-shared
-  # (100.64.0.0/10) with no public default route -- DHCP covers it, no internet
-  # egress over v4 either way.
+  # Hetzner Cloud: statically-assigned IPv6 (not SLAAC/DHCPv6). IPv4 is a real
+  # public primary IP (2.31.59.138, added 2026-10-12), assigned the same way
+  # Hetzner always does it: a single /32 plus a point-to-point gateway, handed
+  # out over DHCP -- nothing to pin statically here, useDHCP already picks up
+  # whatever primary IPv4 is set in the Hetzner console/API, including if it's
+  # ever changed there again.
   networking.useDHCP = false;
   networking.interfaces.eth0 = {
     useDHCP = true;
@@ -57,13 +60,20 @@
     # Declarative-only: without this, sshd also honors a manually-dropped
     # ~/.ssh/authorized_keys, which nixos-rebuild/deploy-rs never cleans up --
     # a one-time write access there would grant silent, persistent SSH access.
-    authorizedKeysFiles = [ "/etc/ssh/authorized_keys.d/%u" ];
+    # (authorizedKeysFiles alone is a no-op here: the sshd module makes its own
+    # second, additive assignment to that same list option for
+    # /etc/ssh/authorized_keys.d/%u, and NixOS merges list-option definitions
+    # rather than letting one override another -- see
+    # Specs/hetzner/04-ssh-authorized-keys-lockdown.md for the full trace.)
+    authorizedKeysInHomedir = false;
     settings = {
       PasswordAuthentication = false;
       KbdInteractiveAuthentication = false;
-      # deploy-rs logs in as root (sshUser = "root" in flake.nix) -- key-only, so
-      # this stays prohibit-password rather than "no".
-      PermitRootLogin = "prohibit-password";
+      # No direct root SSH access at all -- deploy-rs connects as tim
+      # (sshUser = "tim" in flake.nix) and escalates via passwordless sudo
+      # (security.sudo.wheelNeedsPassword = false below) for activation, same
+      # pattern as the existing nixos-onedev deploy node.
+      PermitRootLogin = "no";
       X11Forwarding = false;
       # No one needs port/agent forwarding through this host today. If the SSH
       # bastion in Specs/hetzner/03-ssh-bastion.md is implemented, that spec's
@@ -71,10 +81,7 @@
       # to override this -- permitopen alone does nothing while this is false.
       AllowTcpForwarding = false;
       AllowAgentForwarding = false;
-      AllowUsers = [
-        "root"
-        "tim"
-      ];
+      AllowUsers = [ "tim" ];
       MaxAuthTries = 3;
       LoginGraceTime = 20;
       ClientAliveInterval = 300;
@@ -99,13 +106,14 @@
     ];
   };
 
-  users.users.root.openssh.authorizedKeys.keys = [
-    "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIK5ynhdh9jUSrKGll4ZOw4Krji+ipGNfsFKu6EmbEpVMAAAABHNzaDo="
-  ];
+  # No authorized keys for root -- PermitRootLogin is "no" above, so this would be
+  # inert anyway, but leaving it unset makes the "no root SSH access" intent
+  # unambiguous rather than relying on sshd_config alone.
+  #
   # Lingering fixes dbus-broker's user unit failing to reload on every switch (no
   # session stays open on a headless SSH box) -- deploy-rs treated that as a hard
-  # activation failure and rolled back. Set for every user on this host, not just
-  # root, since deploy-rs/sudo can act as either.
+  # activation failure and rolled back. Kept for root too even without SSH access,
+  # since root still runs activation scripts via tim's sudo.
   users.users.root.linger = true;
 
   users.users.tim = {
