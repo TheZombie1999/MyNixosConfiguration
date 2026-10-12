@@ -111,13 +111,17 @@
     extraConfig = ''
       Match User jump
         AllowTcpForwarding yes
-        # sshd_config's PermitOpen and the authorized_keys permitopen= option
-        # are unioned, not intersected -- the global "PermitOpen any" default
-        # above means a bare permitopen= in the key is a no-op (any already
-        # allows everything) unless this is narrowed first. "none" leaves
-        # permitopen= in the jump user's key as the sole source of allowed
-        # destinations.
-        PermitOpen none
+        # Verified live: authorized_keys permitopen= does NOT narrow this --
+        # an explicit "PermitOpen none" here is a hard block the key's
+        # permitopen= can't add exceptions back to (confirmed: it also
+        # refused the one host the key *does* list), and leaving PermitOpen
+        # unset here just inherits the base config's explicit "any" below
+        # (NixOS always writes PermitOpen out explicitly, so there's no
+        # implicit "unset" to fall back to). So this Match-level PermitOpen
+        # is the actual, authoritative restriction -- not the permitopen= in
+        # the jump user's authorized_keys entry, which is now redundant
+        # documentation at best.
+        PermitOpen 192.168.178.103:22
     '';
   };
 
