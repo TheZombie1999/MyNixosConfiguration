@@ -1,11 +1,30 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  config,
+  inputs,
+  ...
+}:
 
 {
   imports = [
     ./../Hardware/hetzner-nbg1-hardware-configuration.nix
+    inputs.sops-nix.nixosModules.sops
   ];
 
   networking.hostName = "hetzner-nbg1";
+
+  sops.defaultSopsFile = ../Secrets/secrets.yaml;
+  sops.defaultSopsFormat = "yaml";
+  sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  sops.secrets.hetzner_tailscale_key = { };
+
+  services.tailscale = {
+    enable = true;
+    authKeyFile = config.sops.secrets."hetzner_tailscale_key".path;
+    openFirewall = true;
+    useRoutingFeatures = "client";
+    extraUpFlags = [ "--accept-routes" ];
+  };
 
   # Hetzner Cloud: statically-assigned IPv6 (not SLAAC/DHCPv6). IPv4 is a real
   # public primary IP (2.31.59.138, added 2026-10-12), assigned the same way
