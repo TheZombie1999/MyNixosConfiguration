@@ -111,6 +111,13 @@
     extraConfig = ''
       Match User jump
         AllowTcpForwarding yes
+        # sshd_config's PermitOpen and the authorized_keys permitopen= option
+        # are unioned, not intersected -- the global "PermitOpen any" default
+        # above means a bare permitopen= in the key is a no-op (any already
+        # allows everything) unless this is narrowed first. "none" leaves
+        # permitopen= in the jump user's key as the sole source of allowed
+        # destinations.
+        PermitOpen none
     '';
   };
 
