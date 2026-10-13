@@ -23,6 +23,16 @@
 
   services.ssh-agent = {
     enable = true;
-    # pkcs11Whitelist = [ "/nix/store/*" ]; # not available in home-manager 25.05
+    # OpenSSH's ssh-agent refuses every PKCS#11/FIDO middleware library by
+    # default (post-CVE hardening) -- ssh-add -s/-S fails with "agent refused
+    # operation" unless the library path matches one of these patterns. A
+    # single "*" doesn't cross "/" (OpenSSH's own default is "/usr/lib*/*",
+    # two explicit segments, not a recursive glob) -- "/nix/store/*" alone
+    # only matches the package's own store path, never the nested
+    # <pkg>/lib/*.so file actually passed to ssh-add.
+    pkcs11Whitelist = [
+      "/nix/store/*/lib/*"
+      "/nix/store/*/lib/*/*"
+    ];
   };
 }
