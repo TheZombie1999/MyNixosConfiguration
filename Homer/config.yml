@@ -51,21 +51,12 @@ services:
       - name: "Proxmox"
         icon: "fas fa-server"
         subtitle: "Hypervisor (microstar)"
-        type: Ping
-        # Self-signed cert -- the status dot shows offline until this URL has
-        # been visited once in the same browser and the cert warning accepted.
         url: "https://192.168.178.100:8006/"
       - name: "Pi-hole"
         icon: "fas fa-shield-alt"
         subtitle: "DNS / ad-blocking"
-        type: Ping
         url: "http://192.168.178.44/admin/"
-        # /admin/ redirects to /admin/login when unauthenticated (302, not
-        # 2xx) -- Ping's default successCodes only accepts 2xx, so pinging
-        # the login page directly avoids a false "offline" status.
-        endpoint: "http://192.168.178.44/admin/login"
       - name: "OneDev"
         icon: "fas fa-code-branch"
         subtitle: "Git server"
-        type: Ping
         url: "http://192.168.178.101:6610/"
