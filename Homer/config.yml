@@ -1,0 +1,71 @@
+---
+# Homer configuration for the homelab dashboard.
+#
+# This file is the source of truth -- it is pushed as-is onto the Homer LXC
+# (container 104 on proxmox1, /opt/homer/assets/config.yml) via
+# `pct push`/`pct exec`. Homer itself is NOT managed by this flake (plain
+# Debian LXC, python3 http.server) -- there is no Nix build or deploy path
+# for it, and there must not be one. Keep this file and the live copy on the
+# container in sync by hand.
+#
+# See https://github.com/bastienwirtz/homer/blob/main/docs/configuration.md
+
+title: "Homelab"
+subtitle: "Tim's Homelab"
+header: true
+
+colors:
+  light:
+    highlight-primary: "#3367d6"
+    highlight-secondary: "#4285f4"
+    highlight-hover: "#5a95f5"
+    background: "#f5f5f5"
+    card-background: "#ffffff"
+    text: "#363636"
+    text-header: "#ffffff"
+    text-title: "#303030"
+    text-subtitle: "#424242"
+    card-shadow: rgba(0, 0, 0, 0.1)
+    link: "#3273dc"
+    link-hover: "#363636"
+  dark:
+    highlight-primary: "#3367d6"
+    highlight-secondary: "#4285f4"
+    highlight-hover: "#5a95f5"
+    background: "#131313"
+    card-background: "#2b2b2b"
+    text: "#eaeaea"
+    text-header: "#ffffff"
+    text-title: "#fafafa"
+    text-subtitle: "#f5f5f5"
+    card-shadow: rgba(0, 0, 0, 0.4)
+    link: "#3273dc"
+    link-hover: "#ffdd57"
+
+# Services
+# First level array represent a group.
+services:
+  - name: "Home Lab"
+    icon: "fas fa-server"
+    items:
+      - name: "Proxmox"
+        icon: "fas fa-server"
+        subtitle: "Hypervisor (microstar)"
+        type: Ping
+        # Self-signed cert -- the status dot shows offline until this URL has
+        # been visited once in the same browser and the cert warning accepted.
+        url: "https://192.168.178.100:8006/"
+      - name: "Pi-hole"
+        icon: "fas fa-shield-alt"
+        subtitle: "DNS / ad-blocking"
+        type: Ping
+        url: "http://192.168.178.44/admin/"
+        # /admin/ redirects to /admin/login when unauthenticated (302, not
+        # 2xx) -- Ping's default successCodes only accepts 2xx, so pinging
+        # the login page directly avoids a false "offline" status.
+        endpoint: "http://192.168.178.44/admin/login"
+      - name: "OneDev"
+        icon: "fas fa-code-branch"
+        subtitle: "Git server"
+        type: Ping
+        url: "http://192.168.178.101:6610/"
