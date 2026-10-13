@@ -312,13 +312,20 @@
     virtualHosts."homer.nixhomelab.de" = {
       enableACME = true;
       forceSSL = true;
-      extraConfig = ''
-        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
-        add_header X-Content-Type-Options "nosniff" always;
-        add_header X-Frame-Options "DENY" always;
-        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-      '';
-      locations."/".proxyPass = "http://192.168.178.46:8010";
+      locations."/" = {
+        proxyPass = "http://192.168.178.46:8010";
+        # Headers belong here, not at the vhost level -- oauth2-proxy's nginx
+        # integration adds its own "add_header Set-Cookie $auth_cookie;" to this
+        # same location for cookie-refresh support, and nginx's add_header fully
+        # replaces (doesn't merge with) a parent level's add_header set the
+        # moment a child level defines any of its own.
+        extraConfig = ''
+          add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+          add_header X-Content-Type-Options "nosniff" always;
+          add_header X-Frame-Options "DENY" always;
+          add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        '';
+      };
     };
   };
 
