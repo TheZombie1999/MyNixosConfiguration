@@ -44,6 +44,13 @@
     email.domains = [ "*" ];
     extraConfig = {
       github-user = "TheZombie1999";
+      # Without this, oauth2-proxy's open-redirect protection rejects the
+      # ?rd=https://homer.nixhomelab.de/... parameter as "domain / port not in
+      # whitelist" (since /oauth2/callback only ever runs on
+      # hetzner.nixhomelab.de) and falls back to hetzner.nixhomelab.de instead
+      # of sending the user back to the subdomain they actually came from.
+      # Leading dot matches all *.nixhomelab.de subdomains.
+      whitelist-domain = ".nixhomelab.de";
     };
   };
 
