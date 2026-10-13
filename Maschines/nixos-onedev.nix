@@ -36,6 +36,10 @@ in
       ];
       openssh.authorizedKeys.keys = [
         "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIK5ynhdh9jUSrKGll4ZOw4Krji+ipGNfsFKu6EmbEpVMAAAABHNzaDo= ssh:"
+        # YubiKey PIV authentication slot (ECDSA), added as a second factor
+        # alongside the FIDO key above for reaching this host via the
+        # hetzner-nbg1 jump bastion.
+        "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOkqZVgYHmXnVuTk08XgOIeDuHnHlvad2WzbH26tGBXZVf5at6AzWhjdc2aRZgwMOGo2RZQwlEYOvMxvkJUpCN4="
       ];
     };
 
