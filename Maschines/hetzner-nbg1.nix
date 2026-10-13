@@ -209,9 +209,11 @@
     shell = pkgs.shadow; # no interactive shell needed, ProxyJump only uses direct-tcpip
     openssh.authorizedKeys.keys = [
       ''command="echo 'Bastion: port-forwarding only'",no-agent-forwarding,no-X11-forwarding,no-pty,permitopen="192.168.178.103:22" sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIK5ynhdh9jUSrKGll4ZOw4Krji+ipGNfsFKu6EmbEpVMAAAABHNzaDo=''
-      # YubiKey PIV authentication slot (ECDSA) -- second factor alongside
-      # the FIDO key above, same restrictions.
-      ''command="echo 'Bastion: port-forwarding only'",no-agent-forwarding,no-X11-forwarding,no-pty,permitopen="192.168.178.103:22" ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOkqZVgYHmXnVuTk08XgOIeDuHnHlvad2WzbH26tGBXZVf5at6AzWhjdc2aRZgwMOGo2RZQwlEYOvMxvkJUpCN4=''
+      # YubiKey PIV authentication slot (RSA) -- second factor alongside the
+      # FIDO key above, same restrictions. (Previous commit had an ECDSA key
+      # here by mistake -- read from a different YubiKey that was still
+      # plugged in at the time, not this one.)
+      ''command="echo 'Bastion: port-forwarding only'",no-agent-forwarding,no-X11-forwarding,no-pty,permitopen="192.168.178.103:22" ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDE8efig7RNbO23eNgnRkg1BoBA5pqdQ52DpaTihGcT+iAiw5Ni5pShFQ8qYzh11vArRBcCP4ULpJ1uR71SECUjy8M+DKgF7vH2UkrrGoRmbE4+Yb2hKIJCep1bHfPw9lLqiSh3IJshvLXnApR7FtclnEEux/GTFz/E9qGiZ8lh6dgnA3NS1NuySU251OHJJiV6np+Rp/sDi2z/etNnzGY0a3lrBI3ADCDm8aQddUzU3N3w54qo6WLQR4RTBy1RUUlPSe/edDQCI2pd5q26SClRYpF7X431HfS/FYLv5wKhAMvq8bFX0rkz91ixH66umAT2AujJenZGkB4XbgARxvFR''
     ];
   };
 
