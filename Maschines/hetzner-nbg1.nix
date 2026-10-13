@@ -17,6 +17,8 @@
   sops.defaultSopsFormat = "yaml";
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   sops.secrets.hetzner_tailscale_key = { };
+  sops.secrets.oauth2_proxy_client_secret = { };
+  sops.secrets.oauth2_proxy_cookie_secret = { };
 
   services.tailscale = {
     enable = true;
@@ -24,6 +26,34 @@
     openFirewall = true;
     useRoutingFeatures = "client";
     extraUpFlags = [ "--accept-routes" ];
+  };
+
+  services.oauth2-proxy = {
+    enable = true;
+    provider = "github";
+    clientID = "Ov23liXunsNUwjr4o31a"; # not secret
+    clientSecretFile = config.sops.secrets."oauth2_proxy_client_secret".path;
+    cookie = {
+      secretFile = config.sops.secrets."oauth2_proxy_cookie_secret".path;
+      # Shared across both *.nixhomelab.de subdomains -- /oauth2/callback only ever
+      # runs on services.oauth2-proxy.nginx.domain below, so without this the auth
+      # cookie it sets would be scoped to hetzner.nixhomelab.de only and never get
+      # sent back on requests to homer.nixhomelab.de.
+      domain = ".nixhomelab.de";
+    };
+    email.domains = [ "*" ];
+    extraConfig = {
+      github-user = "TheZombie1999";
+    };
+  };
+
+  services.oauth2-proxy.nginx = {
+    # The one host serving /oauth2/start + /oauth2/callback (matches the GitHub
+    # OAuth App's single callback URL) -- every gated vhost's 401 redirects here,
+    # not to its own domain. hetzner.nixhomelab.de deliberately stays out of this
+    # map -- it keeps serving its existing public page, ungated.
+    domain = "hetzner.nixhomelab.de";
+    virtualHosts."homer.nixhomelab.de" = { };
   };
 
   # Hetzner Cloud: statically-assigned IPv6 (not SLAAC/DHCPv6). IPv4 is a real
@@ -278,6 +308,17 @@
           <body><h1>Hello World</h1></body>
         </html>
       '';
+    };
+    virtualHosts."homer.nixhomelab.de" = {
+      enableACME = true;
+      forceSSL = true;
+      extraConfig = ''
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-Frame-Options "DENY" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+      '';
+      locations."/".proxyPass = "http://192.168.178.46:8010";
     };
   };
 
