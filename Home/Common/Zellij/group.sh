@@ -2,7 +2,7 @@
 
 if ! [ -z "$zellij" ] ;then
   echo "Not in zellij !"
-  exit 0 
+  exit 0
 fi
 
 action="$(zellij action list-panes -a -j)"

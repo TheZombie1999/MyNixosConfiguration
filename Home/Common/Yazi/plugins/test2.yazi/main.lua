@@ -29,7 +29,7 @@ end
 
 local function entry(state)
 	ya.dbg("test")
-	
+
 	local child, err = Command("alacritty"):spawn()
 	local pid = child:id()
 	ya.sleep(1)
@@ -41,4 +41,3 @@ local function entry(state)
 end
 
 return { setup = setup, entry = entry }
-

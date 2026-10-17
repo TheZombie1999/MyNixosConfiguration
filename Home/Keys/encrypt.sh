@@ -10,14 +10,13 @@
 
 privateKeys="$(\ls | rg -e '\w*.sh' -e '\w*.pub' -e '\w*.gpg' --invert-match)"
 
-for key in $privateKeys ; do 
+for key in $privateKeys ; do
   echo $key
 
   if [ -f $key ] ; then
     echo "$key Allready Exists !"
     exit 1
   fi
-  
+
   gpg --output "${key}.gpg" --encrypt --recipient tschneider.extern@varta-storage.com $key
 done
-

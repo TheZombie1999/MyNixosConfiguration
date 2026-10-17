@@ -10,11 +10,10 @@
 
 privateKeys="$(\ls | rg -e '\w*.sh' -e '\w*.pub' --invert-match | rg -e '\w*.gpg')"
 
-for key in $privateKeys ; do 
+for key in $privateKeys ; do
   if [ -e "${key%.*}" ]; then
     echo "File ${key%.*} allready Exists !"
   else
-    gpg --output "${key%.*}" --decrypt "${key}" 
+    gpg --output "${key%.*}" --decrypt "${key}"
   fi
 done
-

@@ -1,9 +1,8 @@
-
 { ... }:
 {
-  
+
   programs.broot = {
-    enableBashIntegration	= true;
+    enableBashIntegration = true;
     enable = true;
   };
 

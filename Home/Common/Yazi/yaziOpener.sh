@@ -11,7 +11,7 @@ function normal_mode(){
   echo "Normal"
 
   # Spawn New Terminal With editor
-  alacritty -e hx "$1" 
+  alacritty -e hx "$1"
 }
 
 if [ -n "$ZELLIJ" ] ;then
@@ -19,5 +19,3 @@ if [ -n "$ZELLIJ" ] ;then
 else
   normal_mode "$@"
 fi
-
-

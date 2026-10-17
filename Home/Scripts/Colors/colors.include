@@ -42,4 +42,3 @@ bgcyn='\e[46m'   # Cyan
 bgwht='\e[47m'   # White
 
 clr='\e[0m'     # Text Reset
-

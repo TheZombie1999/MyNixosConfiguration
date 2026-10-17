@@ -83,7 +83,7 @@ stdenv.mkDerivation {
       --replace-fail "wrapper.java.command=java" "wrapper.java.command=${openjdk17}/bin/java" \
       --replace-fail "wrapper.disable_console_input=TRUE" "wrapper.disable_console_input=FALSE"
 
-    echo "wrapper.java.additional.99=-DinstallDir=${installDir}" >> $out/conf/wrapper.conf   
+    echo "wrapper.java.additional.99=-DinstallDir=${installDir}" >> $out/conf/wrapper.conf
 
     runHook postInstall
   '';

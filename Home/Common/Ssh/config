@@ -17,5 +17,3 @@ Host *
 	ControlPersist yes
 	PreferredAuthentications publickey
 	LogLevel ERROR
-	
-

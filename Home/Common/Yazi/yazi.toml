@@ -40,5 +40,3 @@ prepend_rules = [
 	{ mime = "image/*", use = "nsxiv" },
 	{ mime = "video/*", use = "mpv" },
 ]
-
-

@@ -1,7 +1,7 @@
 
 require("test2"):setup()
 require("git"):setup ({
-  order = 1500, 
+  order = 1500,
 })
 require("auto-layout").setup({
    breakpoint_large = 90,  -- new large window threshold, defaults to 100
@@ -27,4 +27,3 @@ th.git.deleted = ui.Style():fg("red"):bold()
 -- 	local size = self._file:size()
 -- 	return string.format("%s %s", size and ya.readable_size(size) or "-", time)
 -- end
-

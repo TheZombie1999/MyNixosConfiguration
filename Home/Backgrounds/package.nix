@@ -1,5 +1,4 @@
-
-{pkgs, stdenv, ...}:
+{ pkgs, stdenv, ... }:
 
 stdenv.mkDerivation {
   pname = "background";

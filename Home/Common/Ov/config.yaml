@@ -30,7 +30,7 @@ General:
 StyleAlternate:
   Background: "gray"
 StyleHeader:
-  Background: "red"  
+  Background: "red"
   Foreground: "blue"
   Bold: true
 StyleOverStrike:

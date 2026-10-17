@@ -5,6 +5,6 @@
 
   home.file."ov" = {
     target = ".config/ov/config.yaml";
-    source = ./config.yaml ;
+    source = ./config.yaml;
   };
 }

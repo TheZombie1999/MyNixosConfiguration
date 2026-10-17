@@ -2,12 +2,17 @@
 
 # https://discourse.nixos.org/t/need-help-understanding-how-to-escape-special-characters-in-the-list-of-str-type/11389/3
 
-{ writeShellApplication, symlinkJoin, colors, lib }:
+{
+  writeShellApplication,
+  symlinkJoin,
+  colors,
+  lib,
+}:
 
 with lib;
 
 let
-  source= symlinkJoin {
+  source = symlinkJoin {
     name = "symlinks";
     paths = [ colors ];
     postBuild = ''
@@ -16,14 +21,17 @@ let
   };
 in
 writeShellApplication {
-    name = "colortest";
+  name = "colortest";
 
-    extraShellCheckFlags = [ "-P" "${source}/lib" "-x" ];
+  extraShellCheckFlags = [
+    "-P"
+    "${source}/lib"
+    "-x"
+  ];
 
-    text = ''
-      SOURCE="${source}/lib"
+  text = ''
+    SOURCE="${source}/lib"
 
-      ${fileContents ./colortest.sh} 
-    '';
+    ${fileContents ./colortest.sh}
+  '';
 }
-

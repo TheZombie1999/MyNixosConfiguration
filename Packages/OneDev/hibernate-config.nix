@@ -1,8 +1,12 @@
-{ writeTextDir, installDir ? "/opt/onedev/", ... }:
+{
+  writeTextDir,
+  installDir ? "/opt/onedev/",
+  ...
+}:
 
 writeTextDir "conf/hibernate.properties" ''
   #----------------------------------------------------------------------------------
-  # To use embedded HSQLDB database shipped with OneDev, please uncomment HSQLDB 
+  # To use embedded HSQLDB database shipped with OneDev, please uncomment HSQLDB
   # database settings below and comment out settings for other databases
   #----------------------------------------------------------------------------------
 
@@ -19,7 +23,7 @@ writeTextDir "conf/hibernate.properties" ''
   # 2. Create an empty OneDev schema at MySQL side, and make sure to use "InnoDB" as
   #    default storage engine
   # 3. Change the property "hibernate.connection.url", "hibernate.connection.username",
-  #    and "hibernate.connection.password" so that OneDev can connect and write to 
+  #    and "hibernate.connection.password" so that OneDev can connect and write to
   #    the database created in step 2
   #----------------------------------------------------------------------------------
 
@@ -36,7 +40,7 @@ writeTextDir "conf/hibernate.properties" ''
   # 2. Create an empty OneDev schema at MariaDB side, and make sure to use "XtraDB"
   #    or "InnoDB" as the default storage engine
   # 3. Change the property "hibernate.connection.url", "hibernate.connection.username",
-  #    and "hibernate.connection.password" so that OneDev can connect and write to 
+  #    and "hibernate.connection.password" so that OneDev can connect and write to
   #    the database created in step 2
   #----------------------------------------------------------------------------------
 

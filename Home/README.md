@@ -20,7 +20,7 @@ For A muli-user install run:
 
 Genertate key and add to GitHub
 ```bash
-  ssh-keygen 
+  ssh-keygen
 ```
 
 Get the Repository
@@ -38,7 +38,7 @@ Move the new SSH key to the "Keys" folder and then run the  encrypt.sh script.
 
 
 
-## Add second Remote 
+## Add second Remote
 
 ```bash
 git remote set-url --add --push origin git@github.com:TheZombie1999/MyHomeConfiguration.git
@@ -47,7 +47,7 @@ git remote set-url --add --push origin git@github.com:TheZombie1999/MyHomeConfig
 ## Add Ssh-keys
 
 SSH Private Keys are enrypted with gpg.
-To install them on your system run the decrypt skript, 
+To install them on your system run the decrypt skript,
 which will prompt you for your password.
 Adding a new key is as easy as running encrypt with the new key in the keys directory.
 
@@ -87,7 +87,7 @@ Colors are managed with `nix-colors`:
 To Backup your key run the following commands:
 
 ```bash
-gpg --export --export-options backup --output public.gpg  
+gpg --export --export-options backup --output public.gpg
 gpg --export-secret-keys --export-options backup --output private.gpg
 gpg --export-ownertrust > trust.gpg
 ```
@@ -102,8 +102,6 @@ gpg --import-ownertrust trust.gpg
 
 The Backup of these Keys is stored on a usb-stick *PASS*.
 
-## Similar Prjects 
+## Similar Prjects
 
 * Pickel
-
-

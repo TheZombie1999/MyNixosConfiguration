@@ -15,7 +15,7 @@ A Collection Of my nixos maschines and their configuration.
   - Hostname Proxmox
 
 * FairPhone
-  - My Phone 
+  - My Phone
   - Running android
 
 * FritzBox Router
@@ -39,7 +39,7 @@ A Collection Of my nixos maschines and their configuration.
 * Nixos (Test VM's does do anything yet)
 
 # Ip Addresses
-## DHCP 
+## DHCP
 
 The DHCP Range is from 200 to 254.
 
@@ -54,5 +54,3 @@ Devices using dhcp are:
 * 192.168.178.44 PiHole
 * 192.168.178.101 Onedev
 * 192.168.178.103 Onedev-nixos
-
-
