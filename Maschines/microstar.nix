@@ -194,6 +194,16 @@
       config.sops.secrets.microstar_forgejo_runner_token.path;
   };
 
+  # DynamicUser=yes forces a tmpfs-backed private /tmp (systemd can't bind-mount
+  # a persistent host dir for a transient UID). microstar has 7.7G RAM and no
+  # swap, so a multi-GB build artifact plus the upload action's own zip-staging
+  # scratch space can exceed it (ENOSPC) even though the real disk has 80G+
+  # free. Point TMPDIR at a real, disk-backed CacheDirectory instead.
+  systemd.services."forgejo-runner-default" = {
+    serviceConfig.CacheDirectory = "forgejo-runner-default";
+    environment.TMPDIR = "/var/cache/forgejo-runner-default";
+  };
+
   documentation.enable = false;
 
   networking.firewall.interfaces.br0.allowedTCPPorts = [
