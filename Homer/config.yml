@@ -42,6 +42,20 @@ colors:
     link: "#3273dc"
     link-hover: "#ffdd57"
 
+message:
+  style: "is-info"
+  title: "SSH jump host"
+  content: >
+    hetzner-nbg1 (hetzner.nixhomelab.de) doubles as a restricted SSH bastion
+    into the home lab, usable from any machine (even one on a different
+    Tailscale tailnet).<br>
+    Alias, uses the YubiKey PIV key for both hops:
+    <code>ssh nixos-onedev-wan</code><br>
+    Equivalent explicit form:
+    <code>ssh -J jump@hetzner.nixhomelab.de tim@192.168.178.103</code><br>
+    The <code>jump</code> user is locked down to port-forwarding only,
+    to nixos-onedev:22 — not a general shell or bastion to anything else.
+
 # Services
 # First level array represent a group.
 services:

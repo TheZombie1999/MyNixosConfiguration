@@ -15,7 +15,9 @@ jobs:
       - name: Build bootstrap ISO
         run: nix build .#nixosConfigurations.bootstrap-iso.config.system.build.isoImage --out-link iso-result
       - name: Upload ISO artifact
-        uses: actions/upload-artifact@v4
+        # v4+ refuses to run against anything that isn't github.com itself;
+        # Forgejo's artifact server only speaks the older (v3) protocol.
+        uses: actions/upload-artifact@v3
         with:
           name: bootstrap-iso
           path: iso-result/iso/*.iso
