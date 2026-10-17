@@ -1,0 +1,21 @@
+name: bootstrap-iso
+
+on:
+  push:
+    paths:
+      - Images/bootstrap-iso.nix
+      - .forgejo/workflows/bootstrap-iso.yml
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: native
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build bootstrap ISO
+        run: nix build .#nixosConfigurations.bootstrap-iso.config.system.build.isoImage --out-link iso-result
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bootstrap-iso
+          path: iso-result/iso/*.iso
