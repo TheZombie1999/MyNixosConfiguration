@@ -24,6 +24,12 @@
   # Site Administration -> Actions -> Runners -> Create new Runner). The
   # UUID isn't sensitive and lives inline below; only the token is sopsed.
   sops.secrets.microstar_forgejo_runner_token = { };
+  # CI deploy key (.forgejo/workflows/deploy.yml). nix copy's outbound ssh
+  # connection is actually made by nix-daemon (root), not the forgejo-runner
+  # job's own user/$HOME -- confirmed by host-key/hostname fixes (system-wide,
+  # HOME-independent) working, while a per-job ~/.ssh/id_ed25519 identity
+  # file did not. Wired into nix-daemon's own environment below.
+  sops.secrets.microstar_deploy_ssh_key = { };
 
   # Root lives on its own disk (sdb, ext4 -- see microstar-disko.nix), not on
   # the ZFS mirror, so plain systemd-boot off sdb's ESP is enough; no GRUB/ZFS
@@ -68,6 +74,11 @@
     # nixos-onedev isn't reachable right now to scan its key -- add it once
     # the host is back up (ssh-keyscan -t ed25519 192.168.178.103).
   };
+
+  # See sops.secrets.microstar_deploy_ssh_key above for why this lives on
+  # nix-daemon specifically, not the forgejo-runner service.
+  systemd.services.nix-daemon.environment.NIX_SSHOPTS =
+    "-o IdentityFile=${config.sops.secrets.microstar_deploy_ssh_key.path} -o IdentitiesOnly=yes";
 
   services.openssh = {
     enable = true;
