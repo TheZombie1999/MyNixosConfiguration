@@ -11,31 +11,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Hostname resolution (nixos-onedev) and host-key trust (all three
-      # targets) are handled system-wide on microstar instead of here --
-      # networking.extraHosts / programs.ssh.knownHosts in microstar.nix.
-      # That turned out to matter: nix's own internal ssh invocation (used
-      # by `nix copy`, deploy-rs's "Copying profile" step) didn't honor
-      # either a per-job ~/.ssh/config or NIX_SSHOPTS in this environment --
-      # system-wide config is read by every tool regardless. Only the
-      # private key itself needs to be per-job; ssh tries ~/.ssh/id_ed25519
-      # by default with no config needed at all.
+      # Host-key trust (both targets below) is handled system-wide on
+      # microstar instead of here -- programs.ssh.knownHosts in
+      # microstar.nix. That turned out to matter: nix's own internal ssh
+      # invocation (used by `nix copy`, deploy-rs's "Copying profile" step)
+      # didn't honor a per-job ~/.ssh/config or NIX_SSHOPTS in this
+      # environment -- system-wide config is read by every tool regardless.
+      # Only the private key itself needs to be per-job; ssh tries
+      # ~/.ssh/id_ed25519 by default with no config needed at all.
       - name: Set up deploy SSH key
         run: |
           install -m 700 -d ~/.ssh
           printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
-      # One host's failure shouldn't block the others -- each step is
-      # independent, so check the run's summary for which ones actually
+      # One host's failure shouldn't block the other -- each step is
+      # independent, so check the run's summary for which one actually
       # landed.
+      #
+      # nixos-onedev is intentionally not deployed here -- the host doesn't
+      # exist right now (down/mid-migration). Re-add a step for it once
+      # it's back: see networking.extraHosts in microstar.nix, which already
+      # maps the hostname for when that happens.
       - name: Deploy microstar
         continue-on-error: true
         run: nix develop --command deploy .#microstar --skip-checks
-
-      - name: Deploy nixos-onedev
-        continue-on-error: true
-        run: nix develop --command deploy .#nixos-onedev --skip-checks
 
       - name: Deploy hetzner-nbg1
         continue-on-error: true
