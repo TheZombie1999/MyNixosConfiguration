@@ -30,11 +30,16 @@ jobs:
             HostName 192.168.178.103
           EOF
           chmod 600 ~/.ssh/config
-          # accept-new doesn't reliably apply to nix's own internal ssh
-          # invocation (used for `nix copy`) -- keyscan known_hosts directly
-          # instead of relying on it.
+          # Overwrite, not append: $HOME is a persistent StateDirectory, not
+          # ephemeral per-run, so a stale/mismatched entry from an earlier
+          # run would make accept-new refuse the connection outright instead
+          # of accepting the (correct) freshly-scanned key.
           ssh-keyscan -H 192.168.178.100 192.168.178.103 2a01:4f8:1c1c:8a66::1 \
-            >> ~/.ssh/known_hosts 2>/dev/null
+            > ~/.ssh/known_hosts 2>/dev/null
+          # `nix copy` (deploy-rs's "Copying profile" step) makes its own ssh
+          # calls that don't reliably pick up ~/.ssh/config -- NIX_SSHOPTS is
+          # the mechanism nix itself reads, so set it explicitly too.
+          echo "NIX_SSHOPTS=-o IdentitiesOnly=yes -o IdentityFile=$HOME/.ssh/id_ed25519 -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=accept-new" >> "$GITHUB_ENV"
 
       # One host's failure shouldn't block the others -- each step is
       # independent, so check the run's summary for which ones actually
