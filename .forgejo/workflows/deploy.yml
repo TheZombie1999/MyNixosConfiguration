@@ -1,16 +1,13 @@
 name: deploy
-
 on:
   push:
     branches:
       - master
-
 jobs:
   deploy:
     runs-on: native
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up deploy SSH key
         run: |
           install -m 700 -d ~/.ssh
@@ -45,9 +42,8 @@ jobs:
           # even though the key/config above had already been written fine.
           : > ~/.ssh/known_hosts
           for host in 192.168.178.100 192.168.178.103 2a01:4f8:1c1c:8a66::1; do
-            ssh-keyscan -T 10 -H "$host" >> ~/.ssh/known_hosts 2>/dev/null || true
+            ssh-keyscan -T 10 -H "$host" >> ~/.ssh/known_hosts 2>/dev/null || echo "Failed adding key for $host"
           done
-
       # `nix copy` (deploy-rs's "Copying profile" step) makes its own ssh
       # calls that don't read ~/.ssh/config at all -- confirmed by nix
       # failing to resolve the "nixos-onedev" Host alias entirely, not just
@@ -64,13 +60,11 @@ jobs:
         run: |
           export NIX_SSHOPTS="-F $HOME/.ssh/config -o IdentitiesOnly=yes -o IdentityFile=$HOME/.ssh/id_ed25519 -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=accept-new"
           nix develop --command deploy .#microstar --skip-checks
-
       - name: Deploy nixos-onedev
         continue-on-error: true
         run: |
           export NIX_SSHOPTS="-F $HOME/.ssh/config -o IdentitiesOnly=yes -o IdentityFile=$HOME/.ssh/id_ed25519 -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=accept-new"
           nix develop --command deploy .#nixos-onedev --skip-checks
-
       - name: Deploy hetzner-nbg1
         continue-on-error: true
         # No rollback: hetzner's magic/auto-rollback both need a second SSH
