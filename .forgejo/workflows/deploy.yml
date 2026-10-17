@@ -30,6 +30,11 @@ jobs:
             HostName 192.168.178.103
           EOF
           chmod 600 ~/.ssh/config
+          # accept-new doesn't reliably apply to nix's own internal ssh
+          # invocation (used for `nix copy`) -- keyscan known_hosts directly
+          # instead of relying on it.
+          ssh-keyscan -H 192.168.178.100 192.168.178.103 2a01:4f8:1c1c:8a66::1 \
+            >> ~/.ssh/known_hosts 2>/dev/null
 
       # One host's failure shouldn't block the others -- each step is
       # independent, so check the run's summary for which ones actually
