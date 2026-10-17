@@ -196,7 +196,7 @@
       "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIK5ynhdh9jUSrKGll4ZOw4Krji+ipGNfsFKu6EmbEpVMAAAABHNzaDo="
       # CI key for the "deploy every system" Forgejo Actions workflow,
       # runs on microstar's runner -- see .forgejo/workflows/deploy.yml.
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF6HTGLb1w1bRsBOkC2x9lD/m97Qy8rRy1mOaAa8Fx1z forgejo-ci@microstar"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMOoUaURhpG65LVKizv4d4YDK08VKSf9sOaYvTYNdEb/ forgejo-ci@microstar"
     ];
   };
 
