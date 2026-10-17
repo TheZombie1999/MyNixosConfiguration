@@ -5,6 +5,7 @@ keys:
   - &yubikey age1yubikey1qw563wp9nyvkvu5e5vkyysq7wkyzfttk8h3kvltcwn33sj9yxk6kuppwr93
   - &moab age1vx20k8jxars0a2letr42z2vshmhf3cht69kgyrnc5rg63nxtxgvqpld68h
   - &hetzner-nbg1 age1llrhf0c2767ak54k7m9hla8h5aqcj3qrl2a7wmz02wj9uzluu34qq26juj
+  - &microstar age1m6g8dekuqpy8hac9qftf8anfpzq9f6weds2e0zepd07pceh2w59s878tku
 creation_rules:
   - path_regex: Secrets/secrets\.yaml$
     key_groups:
@@ -13,3 +14,4 @@ creation_rules:
       - *yubikey
       - *moab
       - *hetzner-nbg1
+      - *microstar

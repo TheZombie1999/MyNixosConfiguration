@@ -1,0 +1,13 @@
+name: pre-commit
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pre-commit:
+    runs-on: native
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run pre-commit hooks
+        run: nix develop --command pre-commit run --all-files

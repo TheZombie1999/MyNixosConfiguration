@@ -64,7 +64,7 @@
       };
     };
     zpool = {
-      # Storage-only mirror (Incus), not the OS root -- root lives on `boot`.
+      # Storage-only mirror (Incus, Forgejo), not the OS root -- root lives on `boot`.
       rpool = {
         type = "zpool";
         mode = "mirror";
@@ -74,6 +74,10 @@
         };
         datasets = {
           incus = {
+            type = "zfs_fs";
+            options.mountpoint = "legacy";
+          };
+          forgejo = {
             type = "zfs_fs";
             options.mountpoint = "legacy";
           };

@@ -1,5 +1,6 @@
 {
   pkgs,
+  config,
   inputs,
   ...
 }:
@@ -19,6 +20,10 @@
   # Disposable-host pattern, same as hetzner-nbg1/attic: age identity derived
   # from the host's own SSH host key rather than a manually placed keyfile.
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  # Forgejo Actions runner registration secret (UUID + Token pair from
+  # Site Administration -> Actions -> Runners -> Create new Runner). The
+  # UUID isn't sensitive and lives inline below; only the token is sopsed.
+  sops.secrets.microstar_forgejo_runner_token = { };
 
   # Root lives on its own disk (sdb, ext4 -- see microstar-disko.nix), not on
   # the ZFS mirror, so plain systemd-boot off sdb's ESP is enough; no GRUB/ZFS
@@ -91,6 +96,16 @@
   # the forceImportRoot warning, it has no effect here.
   boot.zfs.forceImportRoot = false;
 
+  # Forgejo's repos/DB/etc live on the mirrored rpool instead of sda's plain
+  # ext4, so they survive a single-disk failure. Ordered before forgejo.service
+  # for free: it's a normal fileSystems entry, so local-fs.target (which
+  # forgejo.service depends on via the default systemd unit dependencies)
+  # already waits for it to mount.
+  fileSystems."/var/lib/forgejo" = {
+    device = "rpool/forgejo";
+    fsType = "zfs";
+  };
+
   virtualisation.incus = {
     enable = true;
     preseed = {
@@ -147,7 +162,36 @@
         SSH_LISTEN_PORT = 2222;
         SSH_PORT = 2222;
       };
+      actions.ENABLED = true;
     };
+  };
+
+  services.forgejo-runner.instances.default = {
+    enable = true;
+    settings = {
+      runner.labels = [
+        "ubuntu-latest:docker://node:20-bookworm"
+        "docker:docker://node:20-bookworm"
+        # Runs directly on microstar, no container -- jobs must stick to
+        # PATH-resolvable tools (hostPackages below), since NixOS isn't an
+        # FHS filesystem and steps hardcoding /usr/bin/* paths won't find them.
+        "native:host"
+      ];
+      server.connections.microstar = {
+        url = "http://localhost:3000/";
+        # Get this from Site Administration -> Actions -> Runners -> Create
+        # new Runner on the running Forgejo instance -- not secret, but
+        # unique per registration, so there's no real value to put here yet.
+        uuid = "2403b0a3-3bfd-4e75-8b7b-67eac47a2543";
+      };
+    };
+    hostPackages = [
+      pkgs.bashInteractive
+      pkgs.nodejs
+      config.nix.package
+    ];
+    secrets.server.connections.microstar.token_url =
+      config.sops.secrets.microstar_forgejo_runner_token.path;
   };
 
   documentation.enable = false;

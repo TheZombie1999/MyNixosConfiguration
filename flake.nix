@@ -47,7 +47,8 @@
           system = "x86_64-linux";
           modules = [ ./Images/bootstrap-iso.nix ];
         };
-        "microstar" = nixpkgs.lib.nixosSystem {
+        # Unstable: services.forgejo-runner isn't in the 26.05 stable module set yet.
+        "microstar" = inputs.nixpkgs-unstable.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
             inherit inputs;
