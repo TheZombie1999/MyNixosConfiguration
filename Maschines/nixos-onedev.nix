@@ -42,6 +42,9 @@ in
         # by mistake -- it was read from a different YubiKey that was still
         # plugged in at the time, not this one.)
         "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDE8efig7RNbO23eNgnRkg1BoBA5pqdQ52DpaTihGcT+iAiw5Ni5pShFQ8qYzh11vArRBcCP4ULpJ1uR71SECUjy8M+DKgF7vH2UkrrGoRmbE4+Yb2hKIJCep1bHfPw9lLqiSh3IJshvLXnApR7FtclnEEux/GTFz/E9qGiZ8lh6dgnA3NS1NuySU251OHJJiV6np+Rp/sDi2z/etNnzGY0a3lrBI3ADCDm8aQddUzU3N3w54qo6WLQR4RTBy1RUUlPSe/edDQCI2pd5q26SClRYpF7X431HfS/FYLv5wKhAMvq8bFX0rkz91ixH66umAT2AujJenZGkB4XbgARxvFR"
+        # CI key for the "deploy every system" Forgejo Actions workflow,
+        # runs on microstar's runner -- see .forgejo/workflows/deploy.yml.
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOPjX9oBHTd5I1ojCjHpAoh/hZ1ivmA453VtcCYfZGWC forgejo-ci@microstar"
       ];
     };
 

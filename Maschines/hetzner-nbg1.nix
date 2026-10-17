@@ -194,6 +194,9 @@
     linger = true;
     openssh.authorizedKeys.keys = [
       "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIK5ynhdh9jUSrKGll4ZOw4Krji+ipGNfsFKu6EmbEpVMAAAABHNzaDo="
+      # CI key for the "deploy every system" Forgejo Actions workflow,
+      # runs on microstar's runner -- see .forgejo/workflows/deploy.yml.
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOPjX9oBHTd5I1ojCjHpAoh/hZ1ivmA453VtcCYfZGWC forgejo-ci@microstar"
     ];
   };
 

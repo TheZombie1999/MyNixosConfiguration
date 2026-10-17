@@ -1,0 +1,50 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: native
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up deploy SSH key
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          cat > ~/.ssh/config <<'EOF'
+          Host *
+            IdentitiesOnly yes
+            IdentityFile ~/.ssh/id_ed25519
+            StrictHostKeyChecking accept-new
+            UserKnownHostsFile ~/.ssh/known_hosts
+
+          # Bare mDNS hostname used by deploy.nodes.nixos-onedev in flake.nix
+          # -- microstar has no mDNS resolver, unlike the workstations that
+          # normally run these deploys.
+          Host nixos-onedev
+            HostName 192.168.178.103
+          EOF
+          chmod 600 ~/.ssh/config
+
+      # One host's failure shouldn't block the others -- each step is
+      # independent, so check the run's summary for which ones actually
+      # landed.
+      - name: Deploy microstar
+        continue-on-error: true
+        run: nix develop --command deploy .#microstar --skip-checks
+
+      - name: Deploy nixos-onedev
+        continue-on-error: true
+        run: nix develop --command deploy .#nixos-onedev --skip-checks
+
+      - name: Deploy hetzner-nbg1
+        continue-on-error: true
+        # No rollback: hetzner's magic/auto-rollback both need a second SSH
+        # round-trip from the box back to the deployer, which it can't
+        # reliably make (see justfile's deploy-hetzner-nbg1).
+        run: nix develop --command deploy .#hetzner-nbg1 --skip-checks --auto-rollback false --magic-rollback false
