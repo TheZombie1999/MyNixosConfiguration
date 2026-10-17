@@ -1,75 +1,45 @@
 name: deploy
+
 on:
   push:
     branches:
       - master
+
 jobs:
   deploy:
     runs-on: native
     steps:
       - uses: actions/checkout@v4
+
+      # Hostname resolution (nixos-onedev) and host-key trust (all three
+      # targets) are handled system-wide on microstar instead of here --
+      # networking.extraHosts / programs.ssh.knownHosts in microstar.nix.
+      # That turned out to matter: nix's own internal ssh invocation (used
+      # by `nix copy`, deploy-rs's "Copying profile" step) didn't honor
+      # either a per-job ~/.ssh/config or NIX_SSHOPTS in this environment --
+      # system-wide config is read by every tool regardless. Only the
+      # private key itself needs to be per-job; ssh tries ~/.ssh/id_ed25519
+      # by default with no config needed at all.
       - name: Set up deploy SSH key
         run: |
           install -m 700 -d ~/.ssh
           printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          cat > ~/.ssh/config <<'EOF'
-          Host *
-            IdentitiesOnly yes
-            IdentityFile ~/.ssh/id_ed25519
-            StrictHostKeyChecking accept-new
-            UserKnownHostsFile ~/.ssh/known_hosts
 
-          # Bare mDNS hostname used by deploy.nodes.nixos-onedev in flake.nix
-          # -- microstar has no mDNS resolver, unlike the workstations that
-          # normally run these deploys.
-          Host nixos-onedev
-            HostName 192.168.178.103
-          EOF
-          chmod 600 ~/.ssh/config
-          # Overwrite, not append: $HOME is a persistent StateDirectory, not
-          # ephemeral per-run, so a stale/mismatched entry from an earlier
-          # run would make accept-new refuse the connection outright instead
-          # of accepting the (correct) freshly-scanned key.
-          # One call per host, not a single batched invocation -- scanning
-          # three targets (one of them a WAN IPv6 round-trip) at once was
-          # racing/timing out for some of them, silently dropping their key
-          # line while still printing the banner comment.
-          # `|| true` matters: run: steps execute under `set -e`, and
-          # ssh-keyscan exits non-zero for a host that's down (e.g.
-          # nixos-onedev, currently unreachable) -- without it, that one
-          # failure killed the whole step before it reached the later hosts,
-          # even though the key/config above had already been written fine.
-          : > ~/.ssh/known_hosts
-          for host in 192.168.178.100 192.168.178.103 2a01:4f8:1c1c:8a66::1; do
-            ssh-keyscan -T 10 -H "$host" >> ~/.ssh/known_hosts 2>/dev/null || echo "Failed adding key for $host"
-          done
-      # `nix copy` (deploy-rs's "Copying profile" step) makes its own ssh
-      # calls that don't read ~/.ssh/config at all -- confirmed by nix
-      # failing to resolve the "nixos-onedev" Host alias entirely, not just
-      # mishandling host-key checking. NIX_SSHOPTS is the mechanism nix
-      # itself reads; `-F` points it at our config file explicitly (set on
-      # every deploy step rather than relying on $GITHUB_ENV to persist it
-      # across steps).
-      #
       # One host's failure shouldn't block the others -- each step is
       # independent, so check the run's summary for which ones actually
       # landed.
       - name: Deploy microstar
         continue-on-error: true
-        run: |
-          export NIX_SSHOPTS="-F $HOME/.ssh/config -o IdentitiesOnly=yes -o IdentityFile=$HOME/.ssh/id_ed25519 -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=accept-new"
-          nix develop --command deploy .#microstar --skip-checks
+        run: nix develop --command deploy .#microstar --skip-checks
+
       - name: Deploy nixos-onedev
         continue-on-error: true
-        run: |
-          export NIX_SSHOPTS="-F $HOME/.ssh/config -o IdentitiesOnly=yes -o IdentityFile=$HOME/.ssh/id_ed25519 -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=accept-new"
-          nix develop --command deploy .#nixos-onedev --skip-checks
+        run: nix develop --command deploy .#nixos-onedev --skip-checks
+
       - name: Deploy hetzner-nbg1
         continue-on-error: true
         # No rollback: hetzner's magic/auto-rollback both need a second SSH
         # round-trip from the box back to the deployer, which it can't
         # reliably make (see justfile's deploy-hetzner-nbg1).
-        run: |
-          export NIX_SSHOPTS="-F $HOME/.ssh/config -o IdentitiesOnly=yes -o IdentityFile=$HOME/.ssh/id_ed25519 -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=accept-new"
-          nix develop --command deploy .#hetzner-nbg1 --skip-checks --auto-rollback false --magic-rollback false
+        run: nix develop --command deploy .#hetzner-nbg1 --skip-checks --auto-rollback false --magic-rollback false

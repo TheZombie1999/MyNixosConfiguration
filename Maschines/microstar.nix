@@ -47,6 +47,27 @@
     "192.168.178.44" # pihole, once its Incus container is back up
     "1.1.1.1"
   ];
+  # Deploy-rs's hostname for nixos-onedev relies on mDNS ("nixos-onedev.local"),
+  # which workstations resolve via their own ssh config but microstar has no
+  # mDNS resolver for. A plain /etc/hosts entry works for every tool (nix,
+  # ssh, deploy-rs) without depending on per-process config/env being honored
+  # -- see .forgejo/workflows/deploy.yml, where per-job SSH config/env vars
+  # turned out not to reach nix's own internal ssh invocations at all.
+  networking.extraHosts = ''
+    192.168.178.103 nixos-onedev
+  '';
+
+  # Same reasoning as extraHosts above: declaring these system-wide, instead
+  # of in a per-job ~/.ssh/known_hosts, means every tool trusts them
+  # regardless of whether it reads user ssh config at all.
+  programs.ssh.knownHosts = {
+    microstar-self.hostNames = [ "192.168.178.100" ];
+    microstar-self.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPkhxs7gCWAITjW2loVcLyF7ZuRJQ7Be4FtRfTvpZsyh";
+    hetzner-nbg1.hostNames = [ "2a01:4f8:1c1c:8a66::1" ];
+    hetzner-nbg1.publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPLHKLvsiZzrxvJXBmOy3xrwjnNTnhbZAb3SSKkG6VU+";
+    # nixos-onedev isn't reachable right now to scan its key -- add it once
+    # the host is back up (ssh-keyscan -t ed25519 192.168.178.103).
+  };
 
   services.openssh = {
     enable = true;
