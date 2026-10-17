@@ -38,9 +38,14 @@ jobs:
           # three targets (one of them a WAN IPv6 round-trip) at once was
           # racing/timing out for some of them, silently dropping their key
           # line while still printing the banner comment.
+          # `|| true` matters: run: steps execute under `set -e`, and
+          # ssh-keyscan exits non-zero for a host that's down (e.g.
+          # nixos-onedev, currently unreachable) -- without it, that one
+          # failure killed the whole step before it reached the later hosts,
+          # even though the key/config above had already been written fine.
           : > ~/.ssh/known_hosts
           for host in 192.168.178.100 192.168.178.103 2a01:4f8:1c1c:8a66::1; do
-            ssh-keyscan -T 10 -H "$host" >> ~/.ssh/known_hosts 2>/dev/null
+            ssh-keyscan -T 10 -H "$host" >> ~/.ssh/known_hosts 2>/dev/null || true
           done
 
       # `nix copy` (deploy-rs's "Copying profile" step) makes its own ssh
