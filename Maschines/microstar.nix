@@ -192,6 +192,7 @@
     hostPackages = [
       pkgs.bashInteractive
       pkgs.nodejs
+      pkgs.openssh
       config.nix.package
     ];
     secrets.server.connections.microstar.token_url =
