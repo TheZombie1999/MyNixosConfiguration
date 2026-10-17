@@ -34,8 +34,14 @@ jobs:
           # ephemeral per-run, so a stale/mismatched entry from an earlier
           # run would make accept-new refuse the connection outright instead
           # of accepting the (correct) freshly-scanned key.
-          ssh-keyscan -H 192.168.178.100 192.168.178.103 2a01:4f8:1c1c:8a66::1 \
-            > ~/.ssh/known_hosts 2>/dev/null
+          # One call per host, not a single batched invocation -- scanning
+          # three targets (one of them a WAN IPv6 round-trip) at once was
+          # racing/timing out for some of them, silently dropping their key
+          # line while still printing the banner comment.
+          : > ~/.ssh/known_hosts
+          for host in 192.168.178.100 192.168.178.103 2a01:4f8:1c1c:8a66::1; do
+            ssh-keyscan -T 10 -H "$host" >> ~/.ssh/known_hosts 2>/dev/null
+          done
           # `nix copy` (deploy-rs's "Copying profile" step) makes its own ssh
           # calls that don't reliably pick up ~/.ssh/config -- NIX_SSHOPTS is
           # the mechanism nix itself reads, so set it explicitly too.
