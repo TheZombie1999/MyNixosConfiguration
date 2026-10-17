@@ -42,25 +42,32 @@ jobs:
           for host in 192.168.178.100 192.168.178.103 2a01:4f8:1c1c:8a66::1; do
             ssh-keyscan -T 10 -H "$host" >> ~/.ssh/known_hosts 2>/dev/null
           done
-          # `nix copy` (deploy-rs's "Copying profile" step) makes its own ssh
-          # calls that don't reliably pick up ~/.ssh/config -- NIX_SSHOPTS is
-          # the mechanism nix itself reads, so set it explicitly too.
-          echo "NIX_SSHOPTS=-o IdentitiesOnly=yes -o IdentityFile=$HOME/.ssh/id_ed25519 -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=accept-new" >> "$GITHUB_ENV"
 
+      # `nix copy` (deploy-rs's "Copying profile" step) makes its own ssh
+      # calls that don't reliably pick up ~/.ssh/config -- NIX_SSHOPTS is the
+      # mechanism nix itself reads, so set it explicitly on every deploy step
+      # rather than relying on $GITHUB_ENV persisting it across steps.
+      #
       # One host's failure shouldn't block the others -- each step is
       # independent, so check the run's summary for which ones actually
       # landed.
       - name: Deploy microstar
         continue-on-error: true
-        run: nix develop --command deploy .#microstar --skip-checks
+        run: |
+          export NIX_SSHOPTS="-o IdentitiesOnly=yes -o IdentityFile=$HOME/.ssh/id_ed25519 -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=accept-new"
+          nix develop --command deploy .#microstar --skip-checks
 
       - name: Deploy nixos-onedev
         continue-on-error: true
-        run: nix develop --command deploy .#nixos-onedev --skip-checks
+        run: |
+          export NIX_SSHOPTS="-o IdentitiesOnly=yes -o IdentityFile=$HOME/.ssh/id_ed25519 -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=accept-new"
+          nix develop --command deploy .#nixos-onedev --skip-checks
 
       - name: Deploy hetzner-nbg1
         continue-on-error: true
         # No rollback: hetzner's magic/auto-rollback both need a second SSH
         # round-trip from the box back to the deployer, which it can't
         # reliably make (see justfile's deploy-hetzner-nbg1).
-        run: nix develop --command deploy .#hetzner-nbg1 --skip-checks --auto-rollback false --magic-rollback false
+        run: |
+          export NIX_SSHOPTS="-o IdentitiesOnly=yes -o IdentityFile=$HOME/.ssh/id_ed25519 -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=accept-new"
+          nix develop --command deploy .#hetzner-nbg1 --skip-checks --auto-rollback false --magic-rollback false
