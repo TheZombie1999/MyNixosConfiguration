@@ -113,7 +113,7 @@
       # CI key for the "deploy every system" Forgejo Actions workflow -- this
       # runner deploys microstar to itself over loopback. See
       # .forgejo/workflows/deploy.yml.
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMOoUaURhpG65LVKizv4d4YDK08VKSf9sOaYvTYNdEb/ forgejo-ci@microstar"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIAg6kmXdU/7g+dcLBmTULGuo282sbfuLsFQcBcHzLff forgejo-ci@microstar"
     ];
   };
 
