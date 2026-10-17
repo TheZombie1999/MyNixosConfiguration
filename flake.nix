@@ -10,6 +10,8 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nix-colors.url = "github:misterio77/nix-colors";
     deploy-rs.url = "github:serokell/deploy-rs";
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
     # sheets.url = "github:maaslalani/sheets/v0.3.0";
     # onedev.url = "github:thezombie1999/Onedev-Nixos-Flake";
     # finanzbro.url = "path:/home/tim/OneDev/FinanzeBro";
@@ -41,6 +43,10 @@
           system = "x86_64-linux";
           modules = [ ./Images/bootstrap.nix ];
         };
+        "bootstrap-iso" = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [ ./Images/bootstrap-iso.nix ];
+        };
         "microstar" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
@@ -51,6 +57,7 @@
           };
           modules = [
             ./Maschines/microstar.nix
+            inputs.disko.nixosModules.disko
           ];
         };
         "moab" = nixpkgs.lib.nixosSystem {
@@ -119,6 +126,15 @@
         shellHook = ''
           pre-commit install
         '';
+      };
+
+      deploy.nodes.microstar = {
+        hostname = "192.168.178.100";
+        profiles.system = {
+          user = "root";
+          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations."microstar";
+          sshUser = "tim";
+        };
       };
 
       deploy.nodes.nixos-onedev = {

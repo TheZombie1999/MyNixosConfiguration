@@ -38,6 +38,10 @@ edit-secrets:
 build-bootstrap-image:
     nixos-rebuild build-image --flake .#bootstrap --image-variant proxmox-lxc
 
+# Build a bootstrap ISO (bootable installer/live image)
+build-bootstrap-iso:
+    nixos-rebuild build-image --flake .#bootstrap-iso --image-variant iso
+
 push:
     git push && git push github master
 
@@ -53,6 +57,16 @@ upload-bootstrap-image:
 
 deploy-nixos-onedev:
     deploy -s .#nixos-onedev
+
+deploy-microstar:
+    deploy -s .#microstar
+
+# Remote-install microstar from scratch over SSH: partitions/formats disks via
+# disko and installs NixOS, kexec'ing the still-running Proxmox host straight
+# into the installer (see Tasks/proxmox-to-nixos-migration.md). Wipes the
+# target's disks -- root@192.168.178.100 must already be reachable.
+install-microstar target_host="root@192.168.178.100":
+    nix run github:nix-community/nixos-anywhere -- --flake .#microstar --target-host {{ target_host }}
 
 # --skip-checks: nix flake check fails on the unrelated broken bootstrap config
 # (see Specs/hetzner/01-tailscale-join.md). No rollback -- auto/magic-rollback

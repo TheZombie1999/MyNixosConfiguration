@@ -1,206 +1,183 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
 {
-  config,
   pkgs,
-  home-manager,
-  nix-colors,
   inputs,
   ...
 }:
-
 {
   imports = [
     ./../Hardware/microstar-hardware-configuration.nix
-    ./../Modules/ansible-pull.nix
+    ./microstar-disko.nix
     inputs.sops-nix.nixosModules.sops
-    home-manager.nixosModules.home-manager
   ];
 
-  system.autoPull =
-    let
-      rebuild-nixos-vars = (import ./../Modules/yamlToSet.nix) pkgs ./../Ansible/rebuild-nixos-vars.yml;
-    in
-    {
-      enable = true;
-      sshKey = config.sops.secrets."autoPullPrivateKey".path;
-      repo = "git@github.com:TheZombie1999/MyNixosConfiguration.git";
-      dest = rebuild-nixos-vars.location;
-    };
+  networking.hostName = "microstar";
+  # Required for ZFS; must be unique per machine, generated once at authoring time.
+  networking.hostId = "bcd5badf";
 
   sops.defaultSopsFile = ../Secrets/secrets.yaml;
   sops.defaultSopsFormat = "yaml";
-  sops.age.keyFile = "/home/tim/.config/sops/age/keys.txt";
-  sops.secrets.microstar_tailscale_key = { };
-  sops.secrets.autoPullPrivateKey = { };
+  # Disposable-host pattern, same as hetzner-nbg1/attic: age identity derived
+  # from the host's own SSH host key rather than a manually placed keyfile.
+  sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
-  networking.hostName = "microstar";
-
-  home-manager.users.tim = import ./../Home/Users/tim-microstar-home.nix;
-  home-manager.extraSpecialArgs = { inherit nix-colors; };
-
-  nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-
-  services.minecraft-server = {
-    enable = true;
-    eula = true;
-
-    package =
-      let
-        version = "1.21.3";
-        url = "https://piston-data.mojang.com/v1/objects/45810d238246d90e811d896f87b14695b7fb6839/server.jar";
-        sha256 = "1ddgz0dh830869v82q0cp3zkyanl1p45f7ccbvgrr0y00advhlz1";
-      in
-      pkgs.minecraft-server.overrideAttrs (_old: rec {
-        name = "minecraft-server-${version}";
-        inherit version;
-
-        src = pkgs.fetchurl {
-          inherit url sha256;
-        };
-      });
-  };
-
-  services.openvscode-server.enable = true;
-  services.openvscode-server.host = "0.0.0.0";
-  services.openvscode-server.user = "tim";
-  services.openvscode-server.withoutConnectionToken = false;
-  services.openvscode-server.connectionToken = "Test";
-
-  services.tailscale = {
-    enable = true;
-    authKeyFile = config.sops.secrets."microstar_tailscale_key".path;
-  };
-
-  # services.tailscale.enable = true;
-
-  # Use the systemd-boot EFI boot loader.
+  # Root lives on its own disk (sdb, ext4 -- see microstar-disko.nix), not on
+  # the ZFS mirror, so plain systemd-boot off sdb's ESP is enough; no GRUB/ZFS
+  # boot support needed. Firmware is UEFI-capable (confirmed via efibootmgr).
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # networking.hostName = "nixos"; # Define your hostname.
-  # Pick only one of the below networking options.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
+  # Reproduces the live Proxmox host's vmbr0 bridge (static 192.168.178.100/24
+  # over physical NIC enp3s0, PCI 0000:03:00.0) -- Incus containers get bridged
+  # NICs on the same br0 in Phase 4/5 so they keep real LAN IPs.
+  networking.useDHCP = false;
+  networking.bridges.br0.interfaces = [ "enp3s0" ];
+  networking.interfaces.br0.ipv4.addresses = [
+    {
+      address = "192.168.178.100";
+      prefixLength = 24;
+    }
+  ];
+  networking.defaultGateway = "192.168.178.1";
+  networking.nameservers = [
+    "192.168.178.44" # pihole, once its Incus container is back up
+    "1.1.1.1"
+  ];
 
-  nix.optimise = {
-    automatic = true;
-    dates = [ "03:45" ];
+  services.openssh = {
+    enable = true;
+    authorizedKeysInHomedir = false;
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
+      X11Forwarding = false;
+      AllowTcpForwarding = false;
+      AllowAgentForwarding = false;
+      AllowUsers = [ "tim" ];
+      MaxAuthTries = 3;
+      LoginGraceTime = 20;
+      ClientAliveInterval = 300;
+      ClientAliveCountMax = 2;
+      LogLevel = "VERBOSE";
+    };
   };
 
-  # services.synergy.client = {
-  #   enable = true;
-  #   autoStart = true;
-  #   serverAddress = "192.168.1.201";
-  #   screenName = "client";
-  # };
-
-  # Set your time zone.
-  time.timeZone = "Europe/Berlin";
-
+  users.users.root.linger = true;
   users.users.tim = {
     isNormalUser = true;
-    home = "/home/tim";
-    description = "My Standard User";
     extraGroups = [
       "wheel"
-      "networkmanager"
-      "audio"
-      "minecraft"
+      "incus-admin"
+      "podman"
+    ];
+    linger = true;
+    openssh.authorizedKeys.keys = [
+      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIK5ynhdh9jUSrKGll4ZOw4Krji+ipGNfsFKu6EmbEpVMAAAABHNzaDo="
     ];
   };
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  security.sudo.wheelNeedsPassword = false;
+  security.sudo.execWheelOnly = true;
+  users.users.root.hashedPassword = "!";
 
-  # Select internationalisation properties.
-  # i18n.defaultLocale = "en_US.UTF-8";
-  console = {
-    font = "Lat2-Terminus16";
-    #   keyMap = "us";
-    useXkbConfig = true; # use xkb.options in tty.
+  networking.nftables.enable = true;
+
+  # Required for the rpool mirror (microstar-disko.nix) that Incus's "default"
+  # storage pool sits on. Not detectable by nixos-generate-config: the pool
+  # can't be mounted/scanned until ZFS support is already enabled.
+  boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs.extraPools = [ "rpool" ];
+  # Root is ext4 on sda (microstar-disko.nix), not ZFS -- this just silences
+  # the forceImportRoot warning, it has no effect here.
+  boot.zfs.forceImportRoot = false;
+
+  virtualisation.incus = {
+    enable = true;
+    preseed = {
+      # No "networks" block: br0 is a host-level bridge already created by
+      # networking.bridges.br0 above, not an Incus-managed network. Declaring
+      # it here made Incus try to own/reconcile a network object of the same
+      # name as the existing interface, which failed with "Network not
+      # found" on every reconciliation after the first. The eth0 profile
+      # device below attaches straight to the host bridge via
+      # nictype=bridged + parent=br0, which needs no Incus-managed network.
+      storage_pools = [
+        {
+          name = "default";
+          driver = "zfs";
+          config.source = "rpool/incus";
+        }
+      ];
+      profiles = [
+        {
+          name = "default";
+          devices = {
+            root = {
+              path = "/";
+              pool = "default";
+              type = "disk";
+            };
+            eth0 = {
+              name = "eth0";
+              nictype = "bridged";
+              parent = "br0";
+              type = "nic";
+            };
+          };
+        }
+      ];
+    };
   };
 
-  # Enable the X11 windowing system.
-  # services.xserver.enable = true;
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+  };
 
-  # Enable the Plasma 5 Desktop Environment.
-  # services.xserver.displayManager.sddm.enable = true;
-  # services.xserver.desktopManager.plasma5.enable = true;
+  services.forgejo = {
+    enable = true;
+    database.type = "sqlite3";
+    settings = {
+      server = {
+        DOMAIN = "microstar";
+        HTTP_ADDR = "0.0.0.0";
+        HTTP_PORT = 3000;
+        ROOT_URL = "http://192.168.178.100:3000/";
+        START_SSH_SERVER = true;
+        SSH_LISTEN_PORT = 2222;
+        SSH_PORT = 2222;
+      };
+    };
+  };
 
-  # Configure keymap in X11
-  # services.xserver.xkb.layout = "de";
-  # services.xserver.xkb.options = "eurosign:e,caps:escape";
+  documentation.enable = false;
 
-  # Enable CUPS to print documents.
-  # services.printing.enable = true;
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  # users.users.alice = {
-  #   isNormalUser = true;
-  #   extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-  #   packages = with pkgs; [
-  #     firefox
-  #     tree
-  #   ];
-  # };
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    alacritty
-    helix
-    git
-    sops
+  networking.firewall.interfaces.br0.allowedTCPPorts = [
+    22
+    3000
+    2222
   ];
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-
-  services.vikunja = {
-    enable = true;
-    frontendScheme = "http";
-    frontendHostname = "microstar";
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    trusted-users = [
+      "root"
+      "@wheel"
+    ];
   };
 
-  # services = {
-  #     syncthing = {
-  #         enable = true;
-  #         user = "tim";
-  #         dataDir = "/home/tim/Sync";    # Default folder for new synced folders
-  #         configDir = "/home/tim/.config/syncthing";   # Folder for Syncthing's settings and keys
-  #     };
-  # };
+  environment.systemPackages = with pkgs; [
+    helix
+    git
+    curl
+    wget
+    rsync
+    htop
+    tmux
+  ];
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  networking.firewall.enable = false;
-
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
-  system.stateVersion = "24.05";
+  system.stateVersion = "26.05";
 }
